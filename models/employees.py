@@ -33,6 +33,8 @@ def add_employee(data):
         db = get_db()
         db.execute(query, values)
         db.commit()
+
+        return 'success'
     
     except KeyError as e:
         raise KeyError(f"Data must contain the key: {e}")
@@ -122,6 +124,8 @@ def update_employee(employee_id, data):
         db = get_db()
         db.execute(query, values)
         db.commit()
+
+        return 'success'
            
     except Exception as e:
         raise Exception(f"An error occurred: {e}")
@@ -145,5 +149,8 @@ def delete_employee(employee_id):
         db = get_db()
         db.execute(query, values)
         db.commit()
+
+        return 'success'
+
     except Exception as e:
         raise Exception(f"An error occurred: {e}")
