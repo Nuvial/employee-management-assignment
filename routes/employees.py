@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, Blueprint
+from flask import request, jsonify, Blueprint
 
 from models.employees import add_employee, get_employees, update_employee, delete_employee
 
