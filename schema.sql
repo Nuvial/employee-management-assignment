@@ -40,6 +40,7 @@ CREATE TABLE Users (
     fk_employee_id INTEGER NOT NULL UNIQUE, -- Foreign key to Employees table, ensures each user is linked to an employee.
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL, -- Hashed password for security
+    forgot_password BOOLEAN NOT NULL DEFAULT 0, -- Flag to indicate if the user has requested a password reset
     admin BOOLEAN NOT NULL DEFAULT 0,
     FOREIGN KEY (fk_employee_id) REFERENCES Employees(pk_employee_id) ON DELETE CASCADE -- Ensures that if an employee is deleted, their account is also deleted.
 );

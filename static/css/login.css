@@ -1,9 +1,0 @@
-.square-box {
-    width: 30%;
-    height: 30%;
-    background-color: var(--bs-secondary-bg);
-    border-radius: 10px;
-}
-.square-box h1 {
-    font-family: 'Roboto', sans-serif;
-}

@@ -33,7 +33,7 @@ def add_employee(data):
         db = get_db()
         db.execute(query, values)
         db.commit()
-        db.close()
+        
 
         return 'success'
     
@@ -65,7 +65,6 @@ def get_employees(employee_id=None):
         # Execute the query
         db = get_db()
         employees_data = db.execute(query, values).fetchall()
-        db.close()
 
         # Convert result into a dictionary
         employees_data = [dict(row) for row in employees_data]
@@ -85,11 +84,6 @@ def update_employee(employee_id, data):
             'first_name'
             'last_name'
             'employee_position'
-
-    Raises:
-        TypeError: If `data` is not a dictionary.
-        ValueError: If `data` contains no valid fields to update.
-        Exception: For any other database-related errors.
     """
     try:
         # Check if data is a dictionary
@@ -126,7 +120,7 @@ def update_employee(employee_id, data):
         db = get_db()
         db.execute(query, values)
         db.commit()
-        db.close()
+        
 
         return 'success'
            
@@ -152,7 +146,7 @@ def delete_employee(employee_id):
         db = get_db()
         db.execute(query, values)
         db.commit()
-        db.close()
+        
 
         return 'success'
 

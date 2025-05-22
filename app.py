@@ -1,6 +1,6 @@
-from flask import Flask, render_template, session
+from flask import Flask, render_template, redirect, url_for
 from flask_login import LoginManager
-from auth.routes import User
+from models.auth import User
 from db import get_db
 import sqlite3
 
@@ -11,7 +11,7 @@ app.secret_key = 'secret_key' # replace with a secure key
 from routes.employees import employees
 app.register_blueprint(employees, url_prefix='/employees')
 
-from auth.routes import auth
+from routes.auth import auth
 app.register_blueprint(auth)
 
 
@@ -19,23 +19,21 @@ app.register_blueprint(auth)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'auth.login'
+login_manager.login_message_category = 'warning'
 
 # Base routes
 @app.route('/')
 def index():
-    return render_template('base.html')
+    return redirect(url_for('auth.dashboard'))
 
 @login_manager.user_loader
 def load_user(user_id):
     """Load user from the database using user_id."""
     db = get_db()
     user = db.execute("SELECT * FROM Users WHERE pk_user_id = ?", (user_id,)).fetchone()
-    db.close()
     if user:
-        return User(user['pk_user_id'], user['fk_employee_id'], user['username'], user['password'], user['admin'])
+        return User(user['pk_user_id'], user['fk_employee_id'], user['username'], user['password'], user['forgot_password'], user['admin'])
     return None
-
-
 
 
 
@@ -55,5 +53,4 @@ def inidb_command():
     print("Database initialised.")
 
 if __name__ == '__main__':
-    print('here')
     app.run(debug=True)
