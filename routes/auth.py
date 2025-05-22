@@ -47,7 +47,7 @@ def register():
         
         #Check if employee_id is already registered
         user_id_invalid = isEmployeeIdRegistered(employee_id)
-        if username_invalid:
+        if user_id_invalid:
             flash('Employee ID is already registered to a username. Please ensure it is correct and try again.', 'danger')
             return render_template('register.html', register_form=form)
 
