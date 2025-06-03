@@ -31,11 +31,12 @@ def add_employee(data):
 
         # Execute the query
         db = get_db()
-        db.execute(query, values)
+        cursor = db.execute(query, values)
         db.commit()
+        new_id = cursor.lastrowid
         
 
-        return 'success'
+        return {'status': 'success', 'employee_id': new_id}
     
     except KeyError as e:
         raise KeyError(f"Data must contain the key: {e}")

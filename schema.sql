@@ -44,3 +44,43 @@ CREATE TABLE Users (
     admin BOOLEAN NOT NULL DEFAULT 0,
     FOREIGN KEY (fk_employee_id) REFERENCES Employees(pk_employee_id) ON DELETE CASCADE -- Ensures that if an employee is deleted, their account is also deleted.
 );
+
+
+-- Insert sample data into Employees table
+INSERT INTO Employees (first_name, last_name, employee_position, default_leave_balance)
+VALUES
+('Admin', 'Admin', 'Administrator', 30.0),
+('Ryleigh', 'Frost', 'Employee', 20.0),
+('Claire', 'Bridges', 'Employee', 14.25),
+('Kenyon', 'Buckley', 'Employee', 16.0),
+('Memphis', 'Grant', 'Employee', 25.0),
+('James', 'Petersen', 'Employee', 30.0),
+('Ahmad', 'Gilbert', 'Employee', 20.5),
+('Krystal', 'Rosario', 'Employee', 22.5),
+('Regan', 'Wiley', 'Employee', 22.0),
+('Tatum', 'Fitzgerald', 'Employee', 25.0),
+('Kale', 'Herman', 'Employee', 9.75);
+
+-- EmployeeStats Table
+INSERT INTO EmployeeStats (fk_employee_id, attendance, productivity, performance)
+VALUES
+(1, 90.5, 75.2, 8.5),
+(2, 89.0, 65.2, 8.5),
+(3, 98.5, 80.0, 6.5),
+(4, 100.0, 75.9, 6.6),
+(5, 78.0, 82.0, 7.8),
+(6, 87.0, 75.0, 5.7),
+(7, 98.25, 42.5, 8.9),
+(8, 90.5, 55.0, 5.7),
+(9, 90.5, 84.25, 9.1),
+(10, 99.0, 71.0, 8.7);
+
+-- EmployeeLeave Table (only for those with leave requests)
+INSERT INTO EmployeeLeave (fk_employee_id, leave_type, start_date, end_date, status)
+VALUES
+(2, 'Annual Leave', '2025-05-01', '2025-05-10', 'Approved'),
+(6, 'Annual Leave', '2025-05-01', '2025-05-10', 'Rejected'),
+(6, 'Annual Leave', '2025-05-01', '2025-05-10', 'Pending'),
+(6, 'Annual Leave', '2025-05-15', '2025-05-22', 'Approved'),
+(8, 'Annual Leave', '2025-05-01', '2025-05-10', 'Draft'),
+(10, 'Annual Leave', '2025-05-01', '2025-05-10', 'Pending');

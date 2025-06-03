@@ -1,0 +1,20 @@
+.card-subtitle {
+    color: var(--bs-secondary);
+}
+div div.card {
+    height: 100%;
+}
+div div.card:hover{
+    background-color: orange;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+    color: black;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.4s ease;
+    transform: scale(1.03);
+    cursor: pointer;
+    text-decoration: underline;
+}
+div div.card:hover .card-subtitle,
+div div.card:hover i.fas {
+    color: black;
+    transition: color 0.2s ease;
+}

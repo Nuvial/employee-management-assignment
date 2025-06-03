@@ -1,10 +1,13 @@
 from flask import Flask, render_template, redirect, url_for
 from flask_login import LoginManager
-from models.auth import User
+from flask_bcrypt import Bcrypt
+
+from models.auth import User, registerUser, upgradeUser
+
 from db import get_db
-import sqlite3
 
 app = Flask(__name__)
+bcrypt = Bcrypt()
 app.secret_key = 'secret_key' # replace with a secure key
 
 # Register blueprints
@@ -13,6 +16,12 @@ app.register_blueprint(employees, url_prefix='/employees')
 
 from routes.auth import auth
 app.register_blueprint(auth)
+
+from routes.stats import stats
+app.register_blueprint(stats, url_prefix='/stats')
+
+from routes.leave import leave
+app.register_blueprint(leave, url_prefix='/leave')
 
 
 # Initialise Flask-Login
@@ -24,7 +33,7 @@ login_manager.login_message_category = 'warning'
 # Base routes
 @app.route('/')
 def index():
-    return redirect(url_for('auth.dashboard'))
+    return redirect(url_for('auth.dashboard', active_page='dashboard'))
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -51,6 +60,14 @@ def inidb_command():
     """Call to initialise the database."""
     init_db()
     print("Database initialised.")
+    registerUser({
+        'employee_id': 1,
+        'username': 'admin',
+        'hashed_password': bcrypt.generate_password_hash('admin').decode('utf-8')
+    })
+    upgradeUser(1)
+    print("Admin user created with username 'admin' and password 'admin'.")
+
 
 if __name__ == '__main__':
     app.run(debug=True)

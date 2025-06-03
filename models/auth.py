@@ -128,6 +128,27 @@ def registerUser(data):
     except Exception as e:
         raise e
 
+def upgradeUser(id):
+    """
+    Upgrades a user ID to an admin account. The route should be protected by an admin-only login.
+    Args:
+        id (int): The User ID to upgrade
+    """
+    try:
+        query = """
+            UPDATE Users
+            SET admin = 1
+            WHERE pk_user_id = ?
+        """
+        values = (id,)
+
+        db = get_db()
+        db.execute(query, values)
+        db.commit()
+
+        return 'success'
+    except Exception as e:
+        raise e
 
 def forgotPassword(id):
     """

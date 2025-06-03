@@ -10,3 +10,69 @@
     color: #ffcc00;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
+.nav-link.active {
+    text-decoration: underline;
+}
+.user-icon {
+    color: white;
+    border-radius: 50%;
+    background-color: orange;
+    width: 43px;
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 3px;
+    font-size: 1.5rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+.user-icon:hover {
+    color: #ffcc00;
+}
+.username-text {
+    font-weight: bold;
+}
+
+/* FullCalendar calendar library custom CSS */
+.fc-day-today {
+    background-color: rgba(255, 166, 0, 0.2) !important;
+}
+.fc .btn,
+.fc .btn-primary {
+    background-color: rgb(219, 143, 0) !important;
+    border-color: rgb(219, 143, 0) !important;
+    color: black !important;
+}
+.fc .fc-header-toolbar {
+    margin-bottom: 0.5em !important;
+}
+.calendar-event.Draft {
+    background-color: #ffd580;
+    border-color: #ffd580;
+    font-weight: bold;
+}
+.calendar-event.Pending {
+    background: repeating-linear-gradient(
+        135deg,
+        orange,
+        orange 8px,
+        #ffd580 8px,
+        #ffd580 16px
+    );
+    border-color: orange;
+    font-weight: bold;
+}
+.calendar-event.Approved {
+    background-color: orange;
+    border-color: orange;
+    font-weight: bold;
+}
+.calendar-event.Rejected {
+    background-color: rgb(255, 72, 0);
+    border-color: rgb(255, 72, 0);
+    font-weight: bold;
+}
+.calendar-day {
+    font-size: small;
+    font-family: Arial, Helvetica, sans-serif;
+}

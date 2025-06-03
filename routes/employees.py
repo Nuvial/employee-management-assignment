@@ -1,8 +1,14 @@
-from flask import request, jsonify, Blueprint
+from flask import request, jsonify, Blueprint, render_template
+from flask_login import login_required
 
 from models.employees import add_employee, get_employees, update_employee, delete_employee
 
 employees = Blueprint('employees', __name__)
+
+@employees.route('/')
+@login_required
+def index():
+    return render_template('employees-view.html', active_page='view_records')
 
 @employees.route('/get_employees', methods=['GET'])
 @employees.route('/get_employees/<int:employee_id>', methods=['GET'])
