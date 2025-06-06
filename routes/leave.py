@@ -1,7 +1,7 @@
 from flask import request, jsonify, Blueprint, render_template
 from flask_login import login_required
 
-from models.leave import getLeave, getRemainingLeave
+from .models.leave import getLeave, getRemainingLeave
 
 leave = Blueprint('leave', __name__)
 

@@ -46,12 +46,15 @@
 .fc .fc-header-toolbar {
     margin-bottom: 0.5em !important;
 }
-.calendar-event.Draft {
+.calendar-event.Draft,
+#tableView table .Draft {
     background-color: #ffd580;
     border-color: #ffd580;
     font-weight: bold;
+    color: black;
 }
-.calendar-event.Pending {
+.calendar-event.Pending,
+#tableView table .Pending {
     background: repeating-linear-gradient(
         135deg,
         orange,
@@ -61,16 +64,21 @@
     );
     border-color: orange;
     font-weight: bold;
+    color: black;
 }
-.calendar-event.Approved {
+.calendar-event.Approved,
+#tableView table .Approved {
     background-color: orange;
     border-color: orange;
     font-weight: bold;
+    color: black;
 }
-.calendar-event.Rejected {
+.calendar-event.Rejected,
+#tableView table .Rejected{
     background-color: rgb(255, 72, 0);
     border-color: rgb(255, 72, 0);
     font-weight: bold;
+    color: black;
 }
 .calendar-day {
     font-size: small;

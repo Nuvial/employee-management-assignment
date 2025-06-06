@@ -4,12 +4,42 @@ let employee_leave = {}; // Cache for employee leave records
 let employee_leave_calendar_cache = {}; // Cache for calendar events
 
 $(document).ready(function(){
+    // Ensure calendar view is default
+    $('#toggleTableView')[0].checked = false;
+
     // Begin loading employees data
     loadEmployees();
 
-    // Initialise calendar
+    // Initialise elements
     calendar = initCalendar('#calendar');
+    initSearch();
+    initTableToggle();
 });
+
+function initSearch(){
+    $('#employee-search').on('input', function(){
+        const search = $(this).val().toLowerCase();
+        const employee_table = $('#employee-records-body tr');
+        employee_table.each(function(index, record){
+            const id = $(record).data('employee-id').toString();
+            const name = $(record).find('.employee-name').text().toLowerCase();
+            if ((id.includes(search)) || name.includes(search)){
+                $(record).show();
+            } else {
+                $(record).hide();
+            }
+        });
+    });
+}
+function initTableToggle() {
+    // Add event listener to toggle between table and calendar view for leave records
+    $('#toggleTableView').on('change', function() {
+        $('#calendar').toggle();
+        $('#tableView').toggle();
+
+        calendar.render();
+    });
+}
 
 function loadEmployees() {
     $.ajax({
@@ -34,7 +64,7 @@ function loadEmployeeStats(){
         type: 'GET',
         success: function(resp){
             if (resp.length > 0) {
-                console.log('success')
+                populateEmployeesRecordsStats(resp, 'stats');
             }
         },
         error: function(xhr, status, error) {
@@ -81,6 +111,10 @@ function loadEmployeeLeave() {
                 })
             }
         },
+        complete: function() {
+            // Populate employee leave records in table view
+            populateLeaveTable();
+        },
         error: function(xhr, status, error) {
             console.log("Error loading employees: " + error);
             alert("Failed to load employees leave. Please try again later.");
@@ -91,7 +125,7 @@ function loadEmployeeLeave() {
         url: '/leave/get_leave/remaining',
         type: 'GET',
         success: function(resp){
-            populateEmployeesRecordsLeave(resp);
+            populateEmployeesRecordsStats(resp, 'leave');
         },
         error: function(xhr, status, error) {
             console.log("Error loading employees: " + error);
@@ -143,36 +177,36 @@ function populateEmployeesRecords(data) {
                     <span class="label">Default Leave Balance:</span>
                     <span>${employee_record.default_leave_balance} days</span>
                 </div>
-                <div class="leave-remaining">
+                <div class="leave-remaining placeholder-glow">
                     <span class="label">Leave Remaining:</span>
-                    <span class="employee-leave-remaining"></span>
+                    <span class="employee-leave-remaining placeholder"></span>
                 </div>
                 <div class="sick-leave">
                     <span class="label">Default Sick Leave:</span>
                     <span>${employee_record.default_sick_leave_balance} days</span>
                 </div>
-                <div class="sick-leave-remaining">
+                <div class="sick-leave-remaining placeholder-glow">
                     <span class="label">Sick Leave Remaining:</span>
-                    <span class="employee-sick-remaining"></span>
+                    <span class="employee-sick-remaining placeholder"></span>
                 </div>
             </div>
             <div class="col-4 right">
-                <div class="attendance">
-                    <span class="label">Attendance (%):</span>
-                    <span class="employee-attendance"></span>
+                <div class="attendance placeholder-glow">
+                    <span class="label">Attendance:</span>
+                    <span class="employee-attendance placeholder"></span>
                 </div>
-                <div class="productivity">
-                    <span class="label">Productivity (%):</span>
-                    <span class="employee-productivity"></span>
+                <div class="productivity placeholder-glow">
+                    <span class="label">Productivity:</span>
+                    <span class="employee-productivity placeholder"></span>
                 </div>
-                <div class="performance">
+                <div class="performance placeholder-glow">
                     <span class="label">Performance (0-10):</span>
-                    <span class="employee-performance"></span>
+                    <span class="employee-performance placeholder"></span>
                 </div>
                 <hr>
-                <div class="last-updated">
+                <div class="last-updated placeholder-glow">
                     <span class="label">Last Updated:</span>
-                    <span class="employee-stats-recorded"></span>
+                    <span class="employee-stats-recorded placeholder"></span>
                 </div>
             </div>
         </div>
@@ -181,19 +215,78 @@ function populateEmployeesRecords(data) {
     table_body.html(table_html);
     stats_body.html(stats_html);
 }
-function populateEmployeesRecordsLeave(data) {
+
+function populateLeaveTable() {
+    const leave_table_body = $('#tableView');
+
+    let html = '';
+    Object.keys(employee_leave).forEach(employee_id => {
+        const leave_records = employee_leave[employee_id];
+        html += `
+            <table class="table table-striped table-bordered" data-employee-id="${employee_id}" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Leave Type</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+        `
+        leave_records.forEach(record => {
+            html += `
+                <tbody>
+                    <tr>
+                        <td>${record.leave_type}</td>
+                        <td>${new Date(record.start_date).toLocaleDateString()}</td>
+                        <td>${new Date(record.end_date).toLocaleDateString()}</td>
+                        <td class="${record.status}">${record.status}</td>
+                    </tr>
+                </tbody>
+            `
+        });
+        html += '</table>';
+    });
+    
+    leave_table_body.html(html);
+}
+
+
+function populateEmployeesRecordsStats(data, field) {
     const stats_body = $('#employee-stats-body');
 
     stats_body.children().each(function(index, record) {
         const employee_id = $(record).data('employee-id');
-        const remaining_leave = data.find(leave => leave.fk_employee_id === employee_id);
-        if (remaining_leave) {
-            $(record).find('.employee-leave-remaining').text(`${remaining_leave.leave_remaining} days`);
-            $(record).find('.employee-sick-remaining').text(`${remaining_leave.sick_leave_remaining} days`);
+        const target_data = data.find(target => target.fk_employee_id === employee_id);
+        if (field === 'leave'){
+            if (target_data) {
+                try {
+                    $(record).find('.employee-leave-remaining').text(`${target_data.leave_remaining} days`).removeClass('placeholder');
+                    $(record).find('.employee-sick-remaining').text(`${target_data.sick_leave_remaining} days`).removeClass('placeholder');
+                } catch (e) {
+                    if (e instanceof TypeError){
+                        console.log(`Employee ID ${employee_id} does not have a valid sick leave.`);
+                    } else {
+                        console.error(e);
+                    }
+                }
+            }
+        } else if (field === 'stats'){
+            try {
+                $(record).find('.employee-attendance').text(`${target_data.attendance} %`).removeClass('placeholder');
+                $(record).find('.employee-productivity').text(`${target_data.productivity} %`).removeClass('placeholder');
+                $(record).find('.employee-performance').text(`${target_data.performance}`).removeClass('placeholder');
+                $(record).find('.employee-stats-recorded').text(`${new Date(target_data.date_recorded).toLocaleString()}`).removeClass('placeholder');
+            } catch (e) {
+                if (e instanceof TypeError){
+                    console.error(`Employee ID: ${employee_id} does not have a stats record.`);
+                } else {
+                    console.error(e);
+                }
+            }
         }
-    })
+    });
 }
-
 
 function handleStatsPeek(element){
     // Handle stats peek on hover
@@ -212,12 +305,17 @@ function handleLeavePeek(element, calendar) {
     const events = employee_leave_calendar_cache[employee_id] || [];
 
     if (events.length === 0) { // If employee has no leave records set calendar to idle state
-        calendar_container_div.removeClass('hover-calendar').addClass('idle-calendar');
+        calendar_container_div.removeClass('hover-calendar active-calendar').addClass('idle-calendar');
+        $('#tableView table').hide(); // Hide all tables
         return;
     }
 
     calendar.addEventSource(events);
     calendar_container_div.removeClass('idle-calendar active-calendar').addClass('hover-calendar');
+
+    // Show table view for the selected employee
+    $('#tableView table').hide(); // Hide all tables
+    $(`#tableView table[data-employee-id="${employee_id}"]`).show(); // Show the table for the hovered employee
 }
 function focusEmployeeRecord(element, calendar) {
     // Show stats for the selected employee by reusing hover functionality

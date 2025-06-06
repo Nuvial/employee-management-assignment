@@ -15,7 +15,10 @@ function initCalendar(id) {
             center: '',
             right: 'prev today next'
         },
-        events: []
+        events: [],
+        eventDidMount: function(info) {
+            info.el.title = `${info.event.extendedProps.status}`;
+        }
     });
     calendar.render();
     return calendar;

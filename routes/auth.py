@@ -2,9 +2,9 @@ from flask import Blueprint, request, redirect, url_for, flash, render_template
 from flask_login import login_user, logout_user, login_required
 from flask_bcrypt import Bcrypt
 
-from models.auth import LoginForm, RegisterForm, User
-from models.auth import usernameTaken, isEmployeeIdRegistered, registerUser, forgotPassword, getUserData
-from models.employees import get_employees
+from .models.auth import LoginForm, RegisterForm, User
+from .models.auth import usernameTaken, isEmployeeIdRegistered, registerUser, forgotPassword, getUserData
+from .models.employees import get_employees
 
 # Initialise blueprint and bcrypt
 auth = Blueprint('auth', __name__)

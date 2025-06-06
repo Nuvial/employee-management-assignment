@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, url_for
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
 
-from models.auth import User, registerUser, upgradeUser
+from routes.models.auth import User, registerUser, upgradeUser
 
 from db import get_db
 

@@ -1,7 +1,7 @@
 from flask import request, jsonify, Blueprint, render_template
 from flask_login import login_required
 
-from models.stats import getStats
+from .models.stats import getStats
 
 stats = Blueprint('stats', __name__)
 

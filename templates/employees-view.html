@@ -21,6 +21,7 @@
                 </div>
             </div>
             <div class="card-body employee-records">
+                <input class="form-control" id="employee-search" placeholder="ID/Name...">
                 <table class="table table-hover">
                     <tbody id="employee-records-body">
                         <!-- Employee records will be populated here -->
@@ -39,11 +40,16 @@
             </div>
         </div>
         <div class="card calendar-card">
-            <div class="card-header">
-                <h5 class="card-title m-0">Leave</h5>
+            <div class="card-header d-flex justify-content-between">
+                <h5 class="card-title m-0 mx-auto">Leave</h5>
+                <div class="form-check form-switch position-absolute end-0 mx-3">
+                    <input class="form-check-input" type="checkbox" role="switch" id="toggleTableView">
+                    <label class="form-check-label" for="toggleTableView">Table View</label>
+                </div>
             </div>
             <div class="card-body calendar-container idle-calendar">
                 <div id="calendar"></div>
+                <div id="tableView" style="display: none;"></div>
             </div>
         </div>
     </div>

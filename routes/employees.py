@@ -1,7 +1,7 @@
 from flask import request, jsonify, Blueprint, render_template
 from flask_login import login_required
 
-from models.employees import add_employee, get_employees, update_employee, delete_employee
+from .models.employees import add_employee, get_employees, update_employee, delete_employee
 
 employees = Blueprint('employees', __name__)
 
