@@ -1,0 +1,194 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.main-flex-container {
+    display: flex;
+    height: calc(100vh - 64px);
+    gap: 2rem;
+    padding: 2rem 0rem 2rem 0rem;
+}
+
+.flex-child {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+
+}
+.card {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+}
+.card.mb-3 {
+    flex: 1 1 40% !important; 
+}
+.card.calendar-card {
+    flex: 1 1 60% !important; 
+}
+
+.card-header {
+    text-align: center;
+}
+
+#addRecordBtn {
+    left: 0;
+    top: 0.5em;
+    margin-left: 1em;
+    padding: 2px 4px 2px 4px;
+    font-size: small;
+}
+#addRecordBtn i {
+    font-size: 10px;
+    text-align: center;
+}
+.view-modify {
+    right: 0;
+    top: 0.35em;
+    padding-right: 1rem;
+    font-size: large;
+}
+.view-modify .view{
+    margin-right: 0.5rem;
+}
+.view-modify i:hover {
+    color: rgba(255, 166, 0, 0.55);
+    cursor: pointer;
+}
+.view-modify .active {
+    color: orange;
+}
+.view-modify .inactive {
+    color: gray;
+}
+
+input.form-control {
+    border-radius: 0px;
+}
+input.bs.form-control {
+    text-align: center;
+}
+
+div.employee-records {
+    padding: 0px;
+}
+div.employee-records table {
+    width: 100%;
+}
+#employee-records-body tr {
+    display: table-row;
+}
+#employee-records-body tr:hover {
+    cursor: pointer;
+}
+#employee-stats-body .left span:not(.bs),
+#employee-stats-body .center span:not(.bs),
+#employee-stats-body .right span:not(.bs) {
+    display: block;
+    text-align: center;
+}
+#employee-stats-body div .label {
+    font-weight: bold;
+    color: orange;
+}
+#employee-stats-body .left{
+    border-right: 1px solid var(--bs-secondary);
+    overflow-y: auto;
+}
+#employee-stats-body .center{
+    overflow-y: auto;
+}
+#employee-stats-body .right{
+    border-left: 1px solid var(--bs-secondary);
+    overflow-y: auto;
+}
+div.employee-records thead {
+    display: none;
+}
+div.employee-records table .employee-name {
+    font-weight: bold;
+    text-align: end;
+    padding-right: 1em;
+    position: relative;
+}
+
+.hover-stats{
+    opacity: 0.25;
+}
+.idle-calendar {
+    opacity: 0.1;
+}
+.hover-calendar {
+    opacity: 0.25;
+}
+.active-stats {
+    opacity: 1;
+}
+.active-calendar {
+    opacity: 1;
+}
+.selected-record td {
+    transition: all 0.3s;
+    background-color: orange;
+    color: black;
+}
+.selected-record:hover td {
+    transition: all 0.7s;
+    background-color: rgba(255, 166, 0, 0.596);
+    color: black;
+}
+td {
+    transition: all 0.1s;
+}
+
+.card-body.calendar-container {
+    padding: 0.5em;
+    height: 100%;
+}
+
+/* Editing */
+.editing-controls-container {
+    display: flex;
+    gap: 6px;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.editing-controls-container div:hover {
+    background-color: rgb(116, 75, 0);
+    transition: background-color 0.3s;
+}
+.editing-controls-container div:active {
+    opacity: 0.6;
+}
+.editing-controls-container div:hover i {
+    color: black;
+    transition: color 0.3s;
+}
+.editing-controls-container div.disabled,
+.editing-controls-container div.disabled i,
+.editing-controls-container div.disabled:active {
+    color: rgba(255, 166, 0, 0.25) !important;
+    cursor: not-allowed !important;
+    opacity: 1 !important;
+    background-color: black !important;
+}
+
+.icon-square {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    background-color: black;
+    cursor: pointer;
+}
+
+.icon-square i {
+    font-size: 14px;
+    color: orange;
+}

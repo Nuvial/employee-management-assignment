@@ -1,0 +1,114 @@
+{% extends "base-auth.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<!-- Forgot Password Modal -->
+<div class="modal fade" id="forgot_password_modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Forgot Password?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username:</label>
+                    <input class="form-control" id="username" value="">
+                    <div class="invalid-feedback">
+                        Username does not exist. Please ensure it is typed correctly.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary btn-sm disabled" id="send_request_btn">Send Request</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Main Login Prompt -->
+<div class="container square-box">
+    <h1 class="text-center">Login</h1>
+    <form method="POST">
+        {{ login_form.hidden_tag() }} <!-- CSRF Token -->
+        <div class="mb-3">
+            {{ login_form.username.label(class="form-label") }}
+            {{ login_form.username(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ login_form.password.label(class="form-label") }}
+            {{ login_form.password(class="form-control") }}
+            <a id="forgot_password" class="small" href="#">Forgot Password?</a>
+        </div>
+        <div class="d-flex justify-content-end">
+            <a class="btn btn-secondary btn-sm mx-2" role="button" href="{{ url_for('auth.register') }}">Register</a>
+            {{ login_form.submit(class="btn btn-primary btn-sm") }}
+        </div>
+    </form>
+</div>
+
+<script>
+    $('#forgot_password').on('click', function() {
+        $('#forgot_password_modal').modal('toggle');
+    })
+
+    $('#username').on('input', function(){
+        const send_request = $('#send_request_btn');
+        if ($(this).val().length > 0){
+            send_request.removeClass('disabled')
+        } else {
+            send_request.addClass('disabled')
+        };
+    });
+
+    $('#send_request_btn').on('click', function(){
+        const username = $('#username').val();
+        if (!username) return;
+
+        $.ajax({
+            type: "GET",
+            url: `/check_users/${username}`,
+            success: function(resp){
+                const user_id = resp['user_id'];
+                if (!user_id) {
+                    toggleInvalidUsername(false);
+                    return
+                }
+
+                toggleInvalidUsername(true);
+                reset_password(user_id);
+            },
+            error: function(xhr, ajaxOptions, error){
+                console.error(xhr)
+                console.error(error)
+            }  
+        })
+    });
+
+    function toggleInvalidUsername(valid=false){
+        const element = $('#username');
+        const hasInvalid = element.hasClass('is-invalid');
+
+        if (!valid && !hasInvalid) element.addClass('is-invalid')
+        else if (valid && hasInvalid) element.removeClass('is-invalid')
+    }
+
+    function reset_password(user_id){
+        $.ajax({
+            type: "POST",
+            url: `/forgot_password/${user_id}`,
+            success: function(resp){
+                if (resp['status'] === 'success'){
+                    location.reload();
+                }
+            },
+            error: function(xhr, ajaxOptions, error){
+                console.error(xhr)
+                console.error(error)
+            }
+        })
+    }
+</script> 
+{% endblock %}

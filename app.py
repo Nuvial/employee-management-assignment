@@ -1,11 +1,49 @@
-from flask import Flask, render_template
-from db import get_db
-import sqlite3
+from flask import Flask, render_template, redirect, url_for
+from flask_login import LoginManager
+from flask_bcrypt import Bcrypt
 
-from routes.employees import employees
+from routes.models.auth import User, registerUser, upgradeUser
+
+from db import get_db
 
 app = Flask(__name__)
+bcrypt = Bcrypt()
+app.secret_key = 'secret_key' # replace with a secure key
+
+# Register blueprints
+from routes.employees import employees
 app.register_blueprint(employees, url_prefix='/employees')
+
+from routes.auth import auth
+app.register_blueprint(auth)
+
+from routes.stats import stats
+app.register_blueprint(stats, url_prefix='/stats')
+
+from routes.leave import leave
+app.register_blueprint(leave, url_prefix='/leave')
+
+
+# Initialise Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'auth.login'
+login_manager.login_message_category = 'warning'
+
+# Base routes
+@app.route('/')
+def index():
+    return redirect(url_for('auth.dashboard', active_page='dashboard'))
+
+@login_manager.user_loader
+def load_user(user_id):
+    """Load user from the database using user_id."""
+    db = get_db()
+    user = db.execute("SELECT * FROM Users WHERE pk_user_id = ?", (user_id,)).fetchone()
+    if user:
+        return User(user['pk_user_id'], user['fk_employee_id'], user['username'], user['password'], user['forgot_password'], user['admin'])
+    return None
+
 
 
 # Database initialisation code
@@ -22,3 +60,14 @@ def inidb_command():
     """Call to initialise the database."""
     init_db()
     print("Database initialised.")
+    registerUser({
+        'employee_id': 1,
+        'username': 'admin',
+        'hashed_password': bcrypt.generate_password_hash('admin').decode('utf-8')
+    })
+    upgradeUser(1)
+    print("Admin user created with username 'admin' and password 'admin'.")
+
+
+if __name__ == '__main__':
+    app.run(debug=True)

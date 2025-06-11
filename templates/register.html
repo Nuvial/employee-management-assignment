@@ -1,0 +1,136 @@
+{% extends "base-auth.html" %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<!-- Main Register Prompt -->
+<div class="container square-box">
+    <h1 class="text-center">Register</h1>
+    <form method="POST" class="needs-validation" novalidate>
+        {{ register_form.hidden_tag() }} <!-- CSRF Token -->
+        <div class="mb-3">
+            {{ register_form.employee_id.label(class="form-label") }}
+            {{ register_form.employee_id(class="form-control form-validate") }}
+            <div class="invalid-feedback">
+                Please enter a valid employee id, this must be a number.
+            </div>
+        </div>
+        <div class="mb-3">
+            {{ register_form.username.label(class="form-label") }}
+            {{ register_form.username(class="form-control form-validate") }}
+            <div class="invalid-feedback">
+                Username must be minimum 3 characters long and maximum 25 characters long.
+            </div>
+        </div>
+        <hr>
+        <div class="mb-3">
+            {{ register_form.password.label(class="form-label") }}
+            {{ register_form.password(class="form-control form-validate") }}
+            <div class="invalid-feedback">
+                Password has to be minimum 6 characters long.
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="confirm_password" class="form-label">Confirm Password:</label>
+            <input class="form-control form-validate" id="confirm_password" type="password">
+            <div class="invalid-feedback">
+                Password does not match.
+            </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <a class="btn btn-secondary btn-sm mx-2" role="button" href="{{ url_for('auth.login') }}">← Login</a>
+            {{ register_form.submit(class="btn btn-primary btn-sm disabled") }}
+        </div>
+    </form>
+</div>
+
+<script>
+    // Register Field Info
+    const employee_id_field = $('#employee_id');
+    const username_field = $('#username');
+    const password_field = $('#password');
+    const confirm_password_field = $('#confirm_password');
+    const submit_btn = $('#submit');
+
+    // Custom Validation for each field
+    function validateEmployeeID(){
+        const val = employee_id_field.val();
+        if (!val) return false;
+
+        if (!/^\d+$/.test(val)) {
+            employee_id_field.addClass('is-invalid');
+            return false;
+        }
+        employee_id_field.removeClass('is-invalid');
+        return true;
+    }
+
+    function validateUsername(){
+        const val = username_field.val();
+        if (!val) return false;
+
+
+        if (val.length < 3 || val.length > 25){
+            username_field.addClass('is-invalid');
+            return false;
+        }
+        username_field.removeClass('is-invalid');
+        return true;
+    }
+
+    function validatePassword(){
+        const val = password_field.val();
+        if (!val) return false;
+
+        if (val.length < 6) {
+            password_field.addClass('is-invalid');
+            return false;
+        }
+        password_field.removeClass('is-invalid');
+        return true;
+    }
+
+    function validateConfirmPassword(){
+        const pass = password_field.val();
+        const confirm = confirm_password_field.val();
+
+        if (!confirm) return false;
+        
+        if (pass !== confirm) {
+            confirm_password_field.addClass('is-invalid');
+            return false;
+        }
+        confirm_password_field.removeClass('is-invalid');
+        return true;
+    }
+
+    function validateForm(){
+        const valid_employee_id = validateEmployeeID();
+        const valid_username = validateUsername();
+        const valid_password = validatePassword();
+        const valid_confirm_password = validateConfirmPassword();
+
+        if (valid_employee_id && valid_username && valid_password && valid_confirm_password){
+            submit_btn.removeClass('disabled');
+        } else {
+            submit_btn.addClass('disabled');
+        }
+    }
+
+    //Attach validation to input events
+    employee_id_field.on('input', validateForm);
+    username_field.on('input', validateForm);
+    password_field.on('input', function(){
+        validateForm();
+        validateConfirmPassword(); //Re-validate confirm password if password changes
+    });
+    confirm_password_field.on('input', validateForm);
+
+    //Prevent submission if invalid
+    $('form').on('submit', function(e){
+        validateForm();
+        if (submit_btn.hasClass('disabled')) {
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}
