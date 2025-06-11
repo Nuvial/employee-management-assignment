@@ -10,6 +10,8 @@ def add_employee(data):
             'first_name'
             'last_name'
             'employee_position'
+            'default_leave_balance'
+            'default_sick_leave_balance'
     Raises:
         KeyError: If any required keys are missing in the data.
         TypeError: If `data` is not a dictionary.
@@ -21,13 +23,15 @@ def add_employee(data):
         first_name = data['first_name']
         last_name = data['last_name']
         position = data['employee_position']
+        leave_bal = data['default_leave_balance']
+        sick_leave_bal = data['default_sick_leave_balance']
 
         # Create query & set values
         query = """
-            INSERT INTO Employees (first_name, last_name, employee_position)
-            VALUES (?, ?, ?)
+            INSERT INTO Employees (first_name, last_name, default_leave_balance, default_sick_leave_balance, employee_position)
+            VALUES (?, ?, ?, ?, ?)
             """
-        values = (first_name, last_name, position)
+        values = (first_name, last_name, leave_bal, sick_leave_bal, position)
 
         # Execute the query
         db = get_db()
@@ -85,6 +89,8 @@ def update_employee(employee_id, data):
             'first_name'
             'last_name'
             'employee_position'
+            'default_leave_balance'
+            'default_sick_leave_balance'
     """
     try:
         # Check if data is a dictionary
@@ -95,7 +101,9 @@ def update_employee(employee_id, data):
         valid_fields = [
             'first_name',
             'last_name',
-            'employee_position'
+            'employee_position',
+            'default_leave_balance',
+            'default_sick_leave_balance',
         ]
         fields_to_update = []
         values = []
@@ -145,6 +153,8 @@ def delete_employee(employee_id):
 
         # Execute the query
         db = get_db()
+        db.execute("PRAGMA foreign_keys = ON") # Enable foreign keys for this connection
+
         db.execute(query, values)
         db.commit()
         

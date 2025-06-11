@@ -1,3 +1,22 @@
+.btn-primary {
+    background-color: rgb(219, 143, 0) !important;
+    border-color: rgb(219, 143, 0) !important;
+    color: black !important;
+}
+.btn-primary:hover {
+    background-color: #ffb84d !important;
+    border-color: #ffb84d !important;
+    color: black !important;
+}
+
+.alert{
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
 .navbar-brand{
     font-family: 'Orbitron', sans-serif;
     font-size: 1.5rem;
@@ -36,12 +55,6 @@
 /* FullCalendar calendar library custom CSS */
 .fc-day-today {
     background-color: rgba(255, 166, 0, 0.2) !important;
-}
-.fc .btn,
-.fc .btn-primary {
-    background-color: rgb(219, 143, 0) !important;
-    border-color: rgb(219, 143, 0) !important;
-    color: black !important;
 }
 .fc .fc-header-toolbar {
     margin-bottom: 0.5em !important;

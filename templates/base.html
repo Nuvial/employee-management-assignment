@@ -33,7 +33,7 @@
                     <a class="nav-link {% if active_page == 'process_leave'%}active{% endif %}" href="#">Process Leave</a>
                     <a class="nav-link {% if active_page == 'modify_login'%}active{% endif %}" href="#">Modify Login Accounts</a>
                     {% else %}
-                    <a class="nav-link {% if active_page == 'view_records'%}active{% endif %}" href="#">View Record</a>
+                    <a class="nav-link {% if active_page == 'view_records'%}active{% endif %}" href="{{ url_for('employees.index') }}">View Record</a>
                     <a class="nav-link {% if active_page == 'request_leave'%}active{% endif %}" href="#">Request Leave</a>
                     <a class="nav-link {% if active_page == 'modify_login'%}active{% endif %}" href="#">Modify Details</a>
                     {% endif %}
@@ -66,6 +66,21 @@
     <script src="https://kit.fontawesome.com/fa4c14ad6c.js" crossorigin="anonymous"></script>
     <!-- jQuery -->    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <!-- Dynamic Flash Message Container -->
+    <div id="flash-container"></div>
+
+    <!-- Flash Messages from backend -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{category}} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
     <div class="container">
         {% block content %}
