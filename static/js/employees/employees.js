@@ -14,7 +14,10 @@ function initTableToggle() {
     });
 }
 
-async function loadEmployees() {
+/**
+ * @param {Array} specific - Array of employee ID's to load specifically. (Optional) 
+ */
+async function loadEmployees(specific=null) {
     try {
         const resp = await $.ajax({
             url: '/employees/get_employees',
@@ -22,7 +25,7 @@ async function loadEmployees() {
         });
 
         if (resp.length > 0){
-            populateEmployeesRecords(resp);
+            populateEmployeesRecords(resp, specific);
             loadEmployeeStats();
             loadEmployeeLeave();
         }
@@ -50,6 +53,9 @@ function loadEmployeeLeave() {
     $.ajax({
         url: '/leave/get_leave',
         type: 'GET',
+        beforeSend: function(){
+            showLoader();
+        },
         success: function(resp){
             if (resp.length > 0) {
                 // Populate employee leave for quick access without multiple AJAX calls
@@ -87,6 +93,7 @@ function loadEmployeeLeave() {
         complete: function() {
             // Populate employee leave records in table view
             populateLeaveTable();
+            hideLoader();
         },
         error: function(xhr, status, error) {
             console.log("Error loading employees: " + error);
@@ -107,12 +114,21 @@ function loadEmployeeLeave() {
     })
 }
 
-function populateEmployeesRecords(data) {
+function populateEmployeesRecords(data, specific) {
     const table_body = $('#employee-records-body');
     const stats_body = $('#employee-stats-body');
 
     table_body.empty();
     stats_body.empty();
+
+    // If specific ids are provided, filter and order data
+    if (Array.isArray(specific) && specific.length > 0) {
+        const data_map = new Map(data.map(record => [record.pk_employee_id, record]));
+        // Filter and order data according to specific id
+        data = specific
+                .map(id => data_map.get(id))
+                .filter(record => record !== undefined);
+    }
 
     table_html = '';
     stats_html = '';

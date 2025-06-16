@@ -16,6 +16,29 @@
                 {% if current_user.admin and active_page == 'modify_records' %}
                 <button type="button" class="btn btn-primary btn-sm position-absolute" id="addRecordBtn">Add <i class="fas fa-plus"></i></button>
                 {% endif %}
+                {% if current_user.admin and active_page == 'view_records' %}
+                <select class="form-select form-select-sm" id="viewSelector">
+                    <option selected>View All</option>
+                    <hr>
+                    <optgroup label="Attendance">
+                        <option value="attendance-top5">Top 5</option>
+                        <option value="attendance-bottom5">Bottom 5</option>
+                        <option value="attendance-mean">Mean</option>
+                        <option value="attendance-median">Median</option>
+                        <option value="attendance-range">Range</option>
+                        <option value="attendance-modal">Modal</option>
+                    </optgroup>
+                    <hr>
+                    <optgroup label="Performance">
+                        <option value="performance-top5">Top 5</option>
+                        <option value="performance-bottom5">Bottom 5</option>
+                        <option value="performance-mean">Mean</option>
+                        <option value="performance-median">Median</option>
+                        <option value="performance-range">Range</option>
+                        <option value="performance-modal">Modal</option>
+                    </optgroup>
+                </select>
+                {% endif %}
                 <h5 class="card-title mb-0">Employee Records</h5>
                 <div class="view-modify position-absolute">
                     <i class="fas fa-eye 2xl view {% if active_page == 'view_records'%}active{% else %}inactive{% endif %}" href="{{ url_for('employees.index') }}"></i>
@@ -38,7 +61,11 @@
     <div class="flex-child">
         <div class="card mb-3">
             <div class="card-header">
-                <h5 class="card-title m-0">Statistics</h5>
+                <div class="averages-text">
+                    <div class="label"></div>
+                    <div class="value"></div>
+                </div>
+                <h5 class="card-title" id="statistics-title">Statistics</h5>
             </div>
             <form id="employee-form" class="needs-validation" novalidate>
                 <div id="employee-stats-body" class="card-body stats">

@@ -1,4 +1,17 @@
 /**
+ * Show spinner loader with whole screen backdrop.
+ */
+function showLoader(){
+    $('#spinnerLoader').addClass('active');
+}
+/**
+ * Hide spinner loader with whole screen backdrop.
+ */
+function hideLoader(){
+    $('#spinnerLoader').removeClass('active');
+}
+
+/**
  * Dynamically displays a Bootstrap alert message at the top right of the page.
  * @param {string} message - The message to display.
  * @param {string} [type='success'] - Bootstrap alert type: 'success', 'danger', 'warning', 'info'.

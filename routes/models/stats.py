@@ -26,7 +26,7 @@ def addStats(employee_id, data):
 
         # Execute the query
         db = get_db()
-        cursor = db.execute(query, values)
+        db.execute(query, values)
         db.commit()
 
         return {'status': 'success'}
@@ -123,3 +123,161 @@ def updateStats(employee_id, data):
            
     except Exception as e:
         raise Exception(f"An error occurred: {e}")
+
+
+# -------------------------- Attendance/Performance Models ------------------------------
+class Averages:
+    def __init__(self, average):
+        # set up a connection.
+        self.db = get_db()
+        if average not in ("attendance", "performance"):
+            raise ValueError('Average must be "attendance" or ')
+        self.column = average
+    
+    def top5(self):
+        try:
+            #Create query
+            query = f"""
+                SELECT fk_employee_id, {self.column} 
+                FROM EmployeeStats
+                ORDER BY attendance DESC
+                LIMIT 5;
+            """
+            output = self.db.execute(query).fetchall()
+
+            #Convert output to dict
+            return [dict(i) for i in output]
+
+        except Exception as e:
+            raise Exception(f"An error occurred: {e}")
+    
+    def bottom5(self):
+        try:
+            #Create query
+            query = f"""
+                SELECT fk_employee_id, {self.column}  
+                FROM EmployeeStats
+                ORDER BY {self.column} ASC
+                LIMIT 5;
+            """
+            output = self.db.execute(query).fetchall()
+
+            #Convert output to dict
+            return [dict(i) for i in output]
+
+        except Exception as e:
+            raise Exception(f"An error occurred: {e}")
+    
+    def mean(self):
+        try: 
+            #Create query
+            query = f"""
+                SELECT
+                    fk_employee_id,
+                    (SELECT AVG({self.column}) from EmployeeStats) AS mean_{self.column} 
+                FROM EmployeeStats
+                WHERE {self.column} <= (SELECT AVG({self.column}) FROM EmployeeStats)
+            """
+
+            output = self.db.execute(query).fetchall()
+
+            #Convert output to dict
+            return [dict(i) for i in output]
+        except Exception as e:
+            raise Exception(f"An error occurred: {e}")
+    
+    def median(self):
+        try: 
+            #Create query
+            query = f"""
+                SELECT 
+                    fk_employee_id,
+                    (SELECT AVG({self.column}) FROM (
+                            SELECT {self.column}
+                            FROM EmployeeStats
+                            ORDER BY {self.column}
+                            LIMIT 2 - (SELECT COUNT(*) FROM EmployeeStats) % 2
+                            OFFSET (SELECT (COUNT(*) - 1) / 2 FROM EmployeeStats)
+                        )
+                    ) as median_{self.column}
+                FROM EmployeeStats
+                WHERE {self.column} < (
+                    SELECT
+                        AVG({self.column})
+                    FROM (
+                        SELECT {self.column}
+                        FROM EmployeeStats
+                        ORDER BY {self.column}
+                        LIMIT 2 - (SELECT COUNT(*) FROM EmployeeStats) % 2
+                        OFFSET (SELECT (COUNT(*) - 1) / 2 FROM EmployeeStats)
+                    )
+                )
+            """
+
+            output = self.db.execute(query).fetchall()
+
+            #Convert output to dict
+            return [dict(i) for i in output]
+        except Exception as e:
+            raise Exception(f"An error occurred: {e}")
+    
+    def range(self):
+        try: 
+            #Create query
+            query = f"""
+            SELECT fk_employee_id, range_{self.column} FROM (
+                SELECT 
+                    fk_employee_id,
+                    (SELECT MAX({self.column}) FROM EmployeeStats) - (SELECT MIN({self.column}) FROM EmployeeStats) AS range_{self.column}
+                FROM EmployeeStats
+                WHERE {self.column} = (SELECT MAX({self.column}) FROM EmployeeStats)
+                LIMIT 1
+            )
+            UNION ALL
+            SELECT fk_employee_id, range_{self.column} FROM (
+                SELECT 
+                    fk_employee_id, 
+                    (SELECT MAX({self.column}) FROM EmployeeStats) - (SELECT MIN({self.column}) FROM EmployeeStats) AS range_{self.column}
+                FROM EmployeeStats
+                WHERE {self.column} = (SELECT MIN({self.column}) FROM EmployeeStats)
+                LIMIT 1
+            )
+        """
+
+            output = self.db.execute(query).fetchall()
+
+            #Convert output to dict
+            return [dict(i) for i in output]
+        except Exception as e:
+            raise Exception(f"An error occurred: {e}")
+    
+    def modal(self):
+        try: 
+            #Create query
+            query = f"""
+                WITH mode_{self.column} AS (
+                    SELECT {self.column}
+                    FROM EmployeeStats
+                    GROUP BY {self.column}
+                    HAVING COUNT(*) = (
+                        SELECT MAX(cnt)
+                        FROM (
+                            SELECT COUNT(*) AS cnt
+                            FROM EmployeeStats
+                            GROUP BY {self.column}
+                        )
+                    )
+                    ORDER BY {self.column} ASC
+                    LIMIT 1
+                )
+                SELECT fk_employee_id, {self.column} as modal_{self.column}
+                FROM EmployeeStats
+                WHERE {self.column} = (SELECT {self.column} FROM mode_{self.column})
+            """
+
+            output = self.db.execute(query).fetchall()
+
+            #Convert output to dict
+            return [dict(i) for i in output]
+        except Exception as e:
+            raise Exception(f"An error occurred: {e}")

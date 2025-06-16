@@ -1,7 +1,7 @@
 from flask import request, jsonify, Blueprint, render_template
 from flask_login import login_required
 
-from .models.stats import getStats, updateStats, addStats
+from .models.stats import getStats, updateStats, addStats, Averages
 
 stats = Blueprint('stats', __name__)
 
@@ -67,3 +67,187 @@ def updateStatsRoute(employee_id):
                 return jsonify({"error": "Failed to update employee"}), 500
         except Exception as e:
             return jsonify({"error": str(e)}), 500
+
+
+
+# --------------- Averages Routes ----------------
+
+@stats.route('/attendance/top5', methods=['GET'])
+def getAttendanceTop5():
+    """
+    Route to get top 5 attendance employee id's
+    Returns:
+        employee_id (array): A list of employee ID's.
+    """
+    if request.method == 'GET':
+        attendance = Averages('attendance')
+        stats = attendance.top5()
+        if stats:
+            return jsonify(stats), 200
+        else:
+            return jsonify({"error": "No stats found"}), 404
+
+@stats.route('/attendance/bottom5', methods=['GET'])
+def getAttendanceBottom5():
+    """
+    Route to get bottom 5 attendance employee id's
+    Returns:
+        employee_id (array): A list of employee ID's.
+    """
+    if request.method == 'GET':
+        attendance = Averages('attendance')
+        stats = attendance.bottom5()
+        if stats:
+            return jsonify(stats), 200
+        else:
+            return jsonify({"error": "No stats found"}), 404
+
+@stats.route('/attendance/mean', methods=['GET'])
+def getAttendanceMean():
+    """
+    Route to get mean attendance employee id's
+    Returns:
+        employee_id (array): A list of employee ID's.
+    """
+    if request.method == 'GET':
+        attendance = Averages('attendance')
+        stats = attendance.mean()
+        if stats:
+            return jsonify(stats), 200
+        else:
+            return jsonify({"error": "No stats found"}), 404
+
+@stats.route('/attendance/median', methods=['GET'])
+def getAttendanceMedian():
+    """
+    Route to get median attendance employee id's
+    Returns:
+        employee_id (array): A list of employee ID's.
+    """
+    if request.method == 'GET':
+        attendance = Averages('attendance')
+        stats = attendance.median()
+        if stats:
+            return jsonify(stats), 200
+        else:
+            return jsonify({"error": "No stats found"}), 404
+
+@stats.route('/attendance/range', methods=['GET'])
+def getAttendanceRange():
+    """
+    Route to get range attendance employee id's
+    Returns:
+        employee_id (array): A list of employee ID's.
+    """
+    if request.method == 'GET':
+        attendance = Averages('attendance')
+        stats = attendance.range()
+        if stats:
+            return jsonify(stats), 200
+        else:
+            return jsonify({"error": "No stats found"}), 404
+
+@stats.route('/attendance/modal', methods=['GET'])
+def getAttendanceModal():
+    """
+    Route to get modal attendance employee id's
+    Returns:
+        employee_id (array): A list of employee ID's.
+    """
+    if request.method == 'GET':
+        attendance = Averages('attendance')
+        stats = attendance.modal()
+        if stats:
+            return jsonify(stats), 200
+        else:
+            return jsonify({"error": "No stats found"}), 404
+
+@stats.route('/performance/top5', methods=['GET'])
+def getPerformanceTop5():
+    """
+    Route to get top 5 performance employee id's
+    Returns:
+        employee_id (array): A list of employee ID's.
+    """
+    if request.method == 'GET':
+        performance = Averages('performance')
+        stats = performance.top5()
+        if stats:
+            return jsonify(stats), 200
+        else:
+            return jsonify({"error": "No stats found"}), 404
+
+@stats.route('/performance/bottom5', methods=['GET'])
+def getPerformanceBottom5():
+    """
+    Route to get bottom 5 performance employee id's
+    Returns:
+        employee_id (array): A list of employee ID's.
+    """
+    if request.method == 'GET':
+        performance = Averages('performance')
+        stats = performance.bottom5()
+        if stats:
+            return jsonify(stats), 200
+        else:
+            return jsonify({"error": "No stats found"}), 404
+
+@stats.route('/performance/mean', methods=['GET'])
+def getPerformanceMean():
+    """
+    Route to get mean performance employee id's
+    Returns:
+        employee_id (array): A list of employee ID's.
+    """
+    if request.method == 'GET':
+        performance = Averages('performance')
+        stats = performance.mean()
+        if stats:
+            return jsonify(stats), 200
+        else:
+            return jsonify({"error": "No stats found"}), 404
+
+@stats.route('/performance/median', methods=['GET'])
+def getPerformanceMedian():
+    """
+    Route to get median performance employee id's
+    Returns:
+        employee_id (array): A list of employee ID's.
+    """
+    if request.method == 'GET':
+        performance = Averages('performance')
+        stats = performance.median()
+        if stats:
+            return jsonify(stats), 200
+        else:
+            return jsonify({"error": "No stats found"}), 404
+
+@stats.route('/performance/range', methods=['GET'])
+def getPerformanceRange():
+    """
+    Route to get range performance employee id's
+    Returns:
+        employee_id (array): A list of employee ID's.
+    """
+    if request.method == 'GET':
+        performance = Averages('performance')
+        stats = performance.range()
+        if stats:
+            return jsonify(stats), 200
+        else:
+            return jsonify({"error": "No stats found"}), 404
+
+@stats.route('/performance/modal', methods=['GET'])
+def getPerformanceModal():
+    """
+    Route to get modal performance employee id's
+    Returns:
+        employee_id (array): A list of employee ID's.
+    """
+    if request.method == 'GET':
+        performance = Averages('performance')
+        stats = performance.modal()
+        if stats:
+            return jsonify(stats), 200
+        else:
+            return jsonify({"error": "No stats found"}), 404
