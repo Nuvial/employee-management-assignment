@@ -9,6 +9,31 @@
     color: black !important;
 }
 
+.loader-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(30, 30, 30, 0.6);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    opacity: 0;
+    color: orange;
+}
+.loader-backdrop.active {
+    opacity: 1;
+    pointer-events: all;
+}
+.loader-backdrop .spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
 .alert{
     position: absolute;
     top: 5%;
@@ -33,7 +58,7 @@
     text-decoration: underline;
 }
 .user-icon {
-    color: white;
+    color: black;
     border-radius: 50%;
     background-color: orange;
     width: 43px;
@@ -58,6 +83,11 @@
 }
 .fc .fc-header-toolbar {
     margin-bottom: 0.5em !important;
+}
+.fc-col-header-cell {
+    background: var(--bs-body-bg) !important;
+    color: white !important;
+    font-weight: 500;
 }
 .calendar-event.Draft,
 #tableView table .Draft {

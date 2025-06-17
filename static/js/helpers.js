@@ -1,4 +1,17 @@
 /**
+ * Show spinner loader with whole screen backdrop.
+ */
+function showLoader(){
+    $('#spinnerLoader').addClass('active');
+}
+/**
+ * Hide spinner loader with whole screen backdrop.
+ */
+function hideLoader(){
+    $('#spinnerLoader').removeClass('active');
+}
+
+/**
  * Dynamically displays a Bootstrap alert message at the top right of the page.
  * @param {string} message - The message to display.
  * @param {string} [type='success'] - Bootstrap alert type: 'success', 'danger', 'warning', 'info'.
@@ -24,14 +37,14 @@ function flashMessage(message, type='success', timeout=3000) {
  * @param {boolean} edit Whether or not to enable editing of events.
  * @returns {Object} The FullCalendar instance object.
  */
-function initCalendar(id, edit=false) {
+function initCalendar(id, height='100%', edit=false) {
     const calendar_div = $(id);
     const calendar = new FullCalendar.Calendar(calendar_div[0], {
         initialView: 'dayGridMonth',
         themeSystem: 'bootstrap5',
-        height: '100%',
+        height: height,
+        firstDay: 1,
         aspectRatio: 1.25,
-        weekends: false,
         dayCellClassNames: 'calendar-day',
         buttonText: {
             today: 'Today'
@@ -44,6 +57,14 @@ function initCalendar(id, edit=false) {
         events: [],
         eventDidMount: function(info) {
             info.el.title = `${info.event.extendedProps.status}`;
+            if (info.event.extendedProps.pk_leave_id) {
+                $(info.el).attr('data-pk-leave-id', info.event.extendedProps.pk_leave_id);
+            }
+        },
+        eventClick: function(info){
+            if (edit && info.el.classList.contains('Pending')) {
+                handleEditClick(info.event);
+            }
         }
     });
     calendar.render();
@@ -205,4 +226,21 @@ function isValidNumber(number, min, max){
     if (number === '') return false;
     const num = Number(number);
     return (num > min) && (num < max)
+}
+
+/**
+ * Initialises the toggle functionality between table and calendar views for leave records.
+ * 
+ * Attaches an event listener to the element with ID 'toggleTableView'. When toggled,
+ * it shows or hides the elements with IDs 'calendar' and 'tableView' accordingly,
+ * and re-renders the calendar to ensure correct display.
+ */
+function initTableToggle() {
+    // Add event listener to toggle between table and calendar view for leave records
+    $('#toggleTableView').on('change', function() {
+        $('#calendar').toggle();
+        $('#tableView').toggle();
+
+        calendar.render();
+    });
 }

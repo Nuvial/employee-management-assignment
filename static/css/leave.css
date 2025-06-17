@@ -1,0 +1,125 @@
+.main-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 64px);
+}
+
+div.leave-request {
+    flex: 0 0 auto;
+}
+div.leave-request .employee-records{
+    max-height: 15em;
+    overflow-y: auto;
+    position: relative;
+}
+#employee-search {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+
+.card-calendar {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+.calendar-container {
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+#calendar {
+    flex: 1 1 0;
+    min-height: 0;
+    padding: 0em 5em 0em 5em;
+}
+
+.calendar-event.Draft,
+#tableView table .Draft {
+    background-color: #ffd580;
+    border-color: #ffd580;
+    font-weight: bold;
+    color: black;
+    opacity: 0.25;
+    cursor: not-allowed;
+}
+.calendar-event.Pending,
+#tableView table .Pending {
+    background: repeating-linear-gradient(
+        135deg,
+        orange,
+        orange 8px,
+        #ffd580 8px,
+        #ffd580 16px
+    );
+    border-color: orange;
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+}
+.calendar-event.Pending:hover,
+#tableView table .Pending:hover {
+    outline: 3px solid black;
+    border-radius: 3px;
+}
+.calendar-event.Approved,
+#tableView table .Approved {
+    background-color: orange;
+    border-color: orange;
+    font-weight: bold;
+    color: black;
+    opacity: 0.25;
+    cursor: not-allowed;
+}
+.calendar-event.Rejected,
+#tableView table .Rejected{
+    background-color: rgb(255, 72, 0);
+    border-color: rgb(255, 72, 0);
+    font-weight: bold;
+    color: black;
+    opacity: 0.25;
+    cursor: not-allowed;
+}
+
+
+#viewRequest .modal-body .date-info {
+    text-align: center;
+}
+#viewRequest .modal-body .label {
+    font-weight: bold;
+    font-size: large;
+}
+.modal-title {
+    font-weight: bold;
+}
+.no-requests {
+    display: none;
+    text-align: center;
+    font-weight: bold;
+    font-size: x-large;
+    padding-bottom: 1em;
+}
+
+.fas.fa-rotate {
+    position: absolute;
+    right: 0;
+    padding-right: 1em;
+    padding-bottom: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.fas.fa-rotate:hover {
+    color: orange;
+    cursor: pointer;
+}
+.refresh-disabled {
+    opacity: 0.25;
+}
+.refresh-disabled:hover {
+    cursor: progress !important;
+    color: white !important;
+}

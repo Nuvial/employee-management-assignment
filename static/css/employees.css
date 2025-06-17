@@ -31,6 +31,19 @@ html, body {
 
 .card-header {
     text-align: center;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    min-height: 41px;
+}
+.card-header .averages-text {
+    margin-right: auto;
+}
+#statistics-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
 }
 
 #addRecordBtn {
@@ -146,6 +159,22 @@ td {
 .card-body.calendar-container {
     padding: 0.5em;
     height: 100%;
+}
+
+#viewSelector {
+    position: absolute;
+    width: min-content;
+    left: 0;
+    margin-left: 1em;
+    top: 0.35em;
+}
+
+.averages-text {
+    font-weight: bold;
+    text-transform: capitalize;
+}
+.averages-text .value{
+    color: orange;
 }
 
 /* Editing */

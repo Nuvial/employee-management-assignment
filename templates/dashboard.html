@@ -20,7 +20,7 @@
         </div>
     </div>
     <div class="col-6">
-        <div class="card">
+        <div class="card" href="{{ url_for('employees.modify_index') }}">
             <div class="card-body">
                 <i class="fas fa-pen-to-square fa-2xl position-absolute top-0 end-0 m-4 pt-2"></i>
                 <h5 class="card-title">Modify Records</h5>
@@ -36,7 +36,7 @@
 </div>
 <div class="row mt-3">
     <div class="col-6">
-        <div class="card">
+        <div class="card" href="{{ url_for('leave.index') }}">
             <div class="card-body">
                 <i class="fas fa-calendar-days fa-2xl position-absolute top-0 end-0 m-4 pt-2"></i>
                 <h5 class="card-title">Process Leave</h5>
@@ -58,7 +58,7 @@
                 <hr>
                 <p class="card-text">
                     As an admin, you can modify employee login accounts, including resetting passwords and updating usernames.<br>
-                    You can also create new accounts, reset forgotten passowrds, and upgrade accounts to admin status if necessary.<br>
+                    You can also create new accounts, reset forgotten passwords, and upgrade accounts to admin status if necessary.<br>
                     This feature ensures that employee access to the system is secure and up-to-date.
                 </p>
             </div>

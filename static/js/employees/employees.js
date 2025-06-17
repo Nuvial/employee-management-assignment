@@ -4,17 +4,10 @@ let editing = false
 let employee_leave = {}; // Cache for employee leave records
 let employee_leave_calendar_cache = {}; // Cache for calendar events
 
-function initTableToggle() {
-    // Add event listener to toggle between table and calendar view for leave records
-    $('#toggleTableView').on('change', function() {
-        $('#calendar').toggle();
-        $('#tableView').toggle();
-
-        calendar.render();
-    });
-}
-
-async function loadEmployees() {
+/**
+ * @param {Array} specific - Array of employee ID's to load specifically. (Optional) 
+ */
+async function loadEmployees(specific=null, stats=true, leave=true) {
     try {
         const resp = await $.ajax({
             url: '/employees/get_employees',
@@ -22,9 +15,9 @@ async function loadEmployees() {
         });
 
         if (resp.length > 0){
-            populateEmployeesRecords(resp);
-            loadEmployeeStats();
-            loadEmployeeLeave();
+            populateEmployeesRecords(resp, specific);
+            if (stats) loadEmployeeStats();
+            if (leave) loadEmployeeLeave();
         }
     } catch (error){
         console.error("Error loading employees: " + error);
@@ -50,9 +43,15 @@ function loadEmployeeLeave() {
     $.ajax({
         url: '/leave/get_leave',
         type: 'GET',
+        beforeSend: function(){
+            showLoader();
+        },
         success: function(resp){
             if (resp.length > 0) {
                 // Populate employee leave for quick access without multiple AJAX calls
+                employee_leave = {};
+                employee_leave_calendar_cache = {};
+
                 resp.forEach(leave_rercord => {
                     if (!employee_leave[leave_rercord.fk_employee_id]) {
                         employee_leave[leave_rercord.fk_employee_id] = [];
@@ -61,7 +60,8 @@ function loadEmployeeLeave() {
                         leave_type: leave_rercord.leave_type,
                         start_date: leave_rercord.start_date,
                         end_date: leave_rercord.end_date,
-                        status: leave_rercord.status
+                        status: leave_rercord.status,
+                        leave_id: leave_rercord.pk_leave_id
                     });
                 });
 
@@ -69,14 +69,19 @@ function loadEmployeeLeave() {
                 Object.keys(employee_leave).forEach(employee_id => {
                     if (!employee_leave_calendar_cache[employee_id]) {
                         employee_leave_calendar_cache[employee_id] = employee_leave[employee_id].map(record => {
+                            const start_date = new Date(record.start_date);
+                            const end_date = new Date(record.end_date);
+                            end_date.setDate(end_date.getDate() + 1);
                             return {
                                 title: record.leave_type,
-                                start: record.start_date,
-                                end: record.end_date,
+                                start: start_date,
+                                end: end_date,
+                                allDay: true,
                                 className: [record.status, 'calendar-event'],
                                 textColor: 'black',
                                 extendedProps: {
-                                    status: record.status
+                                    status: record.status,
+                                    pk_leave_id: record.leave_id
                                 }
                             };
                         });
@@ -87,6 +92,7 @@ function loadEmployeeLeave() {
         complete: function() {
             // Populate employee leave records in table view
             populateLeaveTable();
+            hideLoader();
         },
         error: function(xhr, status, error) {
             console.log("Error loading employees: " + error);
@@ -107,13 +113,21 @@ function loadEmployeeLeave() {
     })
 }
 
-function populateEmployeesRecords(data) {
+function populateEmployeesRecords(data, specific) {
     const table_body = $('#employee-records-body');
     const stats_body = $('#employee-stats-body');
 
     table_body.empty();
     stats_body.empty();
 
+    // If specific ids are provided, filter and order data
+    if (Array.isArray(specific) && specific.length > 0) {
+        const data_map = new Map(data.map(record => [record.pk_employee_id, record]));
+        // Filter and order data according to specific id
+        data = specific
+                .map(id => data_map.get(id))
+                .filter(record => record !== undefined);
+    }
     table_html = '';
     stats_html = '';
     data.forEach(function(employee_record) {
@@ -208,7 +222,7 @@ function populateLeaveTable() {
         `
         leave_records.forEach(record => {
             html += `
-                <tbody>
+                <tbody data-leave-id="${record.leave_id}">
                     <tr>
                         <td>${record.leave_type}</td>
                         <td>${new Date(record.start_date).toLocaleDateString()}</td>
