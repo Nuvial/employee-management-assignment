@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}Process Leave{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/employees.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/leave.css') }}">
+
+<!-- FullCalendar libarary for viewing booked leave -->
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/bootstrap5@6.1.17/index.global.min.js"></script>
+
+<div class="modal fade" id="approveModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-3 mx-auto">Approve Leave?</h1>
+                <button type="button" class="btn-close" style="margin-left: 0px;" data-bs-toggle="modal" data-bs-target="#viewRequest"></button>
+            </div>
+            <div class="modal-footer d-flex justify-content-between" style="border-top: 0px;">
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#viewRequest">Close</button>
+                <button type="button" class="btn btn-success" id="approveRequestConfirm">Approve Request</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="denyModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-3 mx-auto">Deny Leave?</h1>
+                <button type="button" class="btn-close" style="margin-left: 0px;" data-bs-toggle="modal" data-bs-target="#viewRequest"></button>
+            </div>
+            <div class="modal-footer d-flex justify-content-between" style="border-top: 0px;">
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#viewRequest">Close</button>
+                <button type="button" class="btn btn-danger" id="denyRequestConfirm">Deny Request</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="viewRequest" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-3 mx-auto" id="requestTitleID"></h1>
+                <h1 class="modal-title fs-3 mx-auto" id="requestTitleType"></h1>
+                <button type="button" class="btn-close" style="margin-left: 0px;"></button>
+            </div>
+            <div class="modal-body container">
+                <div class="row date-info">
+                    <div class="col-12">
+                        <div class="label">Date Requested:</div>
+                        <div class="value date-requested"></div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row date-info">
+                    <div class="col-6">
+                        <div class="label">Date From:</div>
+                        <div class="value date-from"></div>
+                    </div>
+                    <div class="col-6">
+                        <div class="label">Date To:</div>
+                        <div class="value date-to"></div>
+                    </div>
+                </div>
+                <div class="row date-info mb-2">
+                    <div class="col-12">
+                        <div class="label">Days:</div>
+                        <div class="value days-difference"></div>
+                    </div>
+                </div>
+                <hr>
+                <div class="date-info d-flex justify-content-around">
+                    <div class="defaults d-flex">
+                        <div>
+                            <div class="label">Default Leave (Days):</div>
+                            <div class="value default-leave"></div>
+                        </div>
+                        <div>
+                            <div class="label">Default Sick Leave (Days):</div>
+                            <div class="value default-sick-leave"></div>
+                        </div>
+                    </div>
+                    <div class="vr"></div>
+                    <div class="taken d-flex">
+                        <div>
+                            <div class="label">Leave Taken (Days):</div>
+                            <div class="value leave-taken"></div>
+                        </div>
+                        <div>
+                            <div class="label">Sick Leave Taken (Days):</div>
+                            <div class="value sick-leave-taken"></div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-6">
+                        <label for="adminComments" class="form-label">Admin Comments</label>
+                        <textarea class="form-control" value="" placeholder="Enter any comments here..." id="adminComments" rows="3"></textarea>
+                    </div>
+                    <div class="col-6">
+                        <label for="employeeComments" class="form-label">Employee Comments</label>
+                        <textarea class="form-control" id="employeeComments" rows="3" disabled readonly></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <button type="button" class="btn btn-outline-secondary close-modal">Close</button>
+                <div style="gap: 1em;">
+                    <button type="button" class="btn btn-danger mx-1" id="denyLeaveRequest" data-bs-toggle="modal" data-bs-target="#denyModal">Deny Leave Request</button>
+                    <button type="button" class="btn btn-success" id="approveLeaveRequest" data-bs-toggle="modal" data-bs-target="#approveModal">Approve Leave Request</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main-content-wrapper">
+    <div class="card my-3 leave-request">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Leave Requests</h5>
+            <i class="fas fa-rotate fa-lg refresh"></i>
+        </div>
+        <div class="card-body employee-records p-0">
+            <input class="form-control" id="employee-search" placeholder="ID/Name...">
+            <table class="table table-hover">
+                <tbody id="employee-records-body">
+                    <!-- Employee records will be populated here -->
+                </tbody>
+            </table>
+            <div class="no-requests">There are no active requests to fulfill.</div>
+        </div>
+    </div>
+
+    <div class="card calendar mb-3">
+        <div class="card-header d-flex justify-content-between">
+            <h5 class="card-title m-0 mx-auto">Calendar</h5>
+            <div class="form-check form-switch position-absolute end-0 mx-3">
+                <input class="form-check-input" type="checkbox" role="switch" id="toggleTableView">
+                <label class="form-check-label" for="toggleTableView">Table View</label>
+            </div>
+        </div>
+        <div class="card-body calendar-container idle-calendar">
+            <div id="calendar"></div>
+            <div id="tableView" style="display: none;"></div>
+        </div>
+    </div>
+</div>
+
+
+<script src="{{ url_for('static', filename='js/helpers.js') }}"></script>
+<script src="{{ url_for('static', filename='js/employees/employees.js') }}"></script>
+<script src="{{ url_for('static', filename='js/leave/leave.js') }}"></script>
+
+
+{% endblock %}

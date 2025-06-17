@@ -31,6 +31,8 @@ CREATE TABLE EmployeeLeave (
     date_requested TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status TEXT NOT NULL, /* Draft, Pending, Approved, etc.
     Would ideally be stored in a lookup table, but assignment limits to 4 tables maximum. */
+    comment_employee TEXT, /* Any comments added by employee upon requesting */
+    comment_admin TEXT, /* Any comments added by admin/manager upon status decision */
     FOREIGN KEY (fk_employee_id) REFERENCES Employees(pk_employee_id) ON DELETE CASCADE -- Ensures that if an employee is deleted, their leave requests are also deleted
 );
 
