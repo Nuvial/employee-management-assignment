@@ -135,18 +135,19 @@ function deepEqual(obj1, obj2) {
  * 
  * @param {String} selector A jquery selector string for the text to convert.
  */
-function createInputFields(selector, size='sm', copy_classes=false){
+function createInputFields(selector, size='sm', copy_classes=false, required=false){
     const fields = $(selector).find('.editable');
     fields.each(function(index, field){
         const classes = copy_classes ? $(field).attr('class'): '';
         const first_class = $(field).attr('class').split(' ')[0];
         const [value, unit] = $(field).text().split(' ');
+        const isRequired = required === true ? 'required': '';
 
         let input = `
             <div class="input-group input-group-${size} mb-1 has-validation">
-                <input name="${first_class}" class="bs form-control ${classes}" value="${value}">
+                <input name="${first_class}" class="bs form-control ${classes}" value="${value}" ${isRequired}>
         `
-        if (unit){
+        if (unit && isAlphaNumeric(unit)){
             input += `<span class="bs input-group-text">${unit}</span>`
         }
         input += `
@@ -163,16 +164,17 @@ function createInputFields(selector, size='sm', copy_classes=false){
  * 
  * @param {String} selector A jquery selector string for the input field to convert.
  */
-function revertInputFields(selector, copy_classes=false){
+function revertInputFields(selector, copy_classes=false, wrapper='span'){
     const fields = $(selector);
     fields.each(function(index, field){
         const input = $(field).find('input');
+        if (!input.length) return;
         const input_group_text = $(field).find('.input-group-text');
         const classes = copy_classes ? $(input).attr('class').replace('bs ', '').replace('form-control ', ''): '';
         const [value, unit] = [input.val(), input_group_text.text()];
 
         let text = `
-            <span class="${classes}">${value} ${unit}</span>
+            <${wrapper} class="${classes}">${value} ${unit}</${wrapper}}>
         `
 
         $(field).replaceWith(text);
@@ -205,7 +207,7 @@ function isAlphaNumeric(str) {
  */
 function isNumeric(str) {
     if (str === '') return false
-    return Number(str) !== NaN;
+    return !Number.isNaN(Number(str));
 }
 /**
  * Simple check if a string contains only letters (a-z, A-Z)

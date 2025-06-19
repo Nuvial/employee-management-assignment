@@ -23,6 +23,9 @@ app.register_blueprint(stats, url_prefix='/stats')
 from routes.leave import leave
 app.register_blueprint(leave, url_prefix='/leave')
 
+from routes.users import users
+app.register_blueprint(users, url_prefix='/users')
+
 
 # Initialise Flask-Login
 login_manager = LoginManager()
@@ -41,7 +44,7 @@ def load_user(user_id):
     db = get_db()
     user = db.execute("SELECT * FROM Users WHERE pk_user_id = ?", (user_id,)).fetchone()
     if user:
-        return User(user['pk_user_id'], user['fk_employee_id'], user['username'], user['password'], user['forgot_password'], user['admin'])
+        return User(user['pk_user_id'], user['fk_employee_id'], user['username'], user['password'], user['admin'])
     return None
 
 

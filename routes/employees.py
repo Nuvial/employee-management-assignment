@@ -31,7 +31,7 @@ def get_employees_route(employee_id=None):
         if employees_data:
             return jsonify(employees_data), 200
         else:
-            return jsonify({"error": "No employees found"}), 404
+            return jsonify({"error": "No employees found"})
 
 
 @employees.route('/add_employee', methods=['POST'])

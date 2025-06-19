@@ -158,7 +158,6 @@ def delete_employee(employee_id):
         db.execute(query, values)
         db.commit()
         
-
         return 'success'
 
     except Exception as e:

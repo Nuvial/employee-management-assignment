@@ -21,7 +21,7 @@ def login():
             login_user(user)
             return redirect(url_for('auth.dashboard', active_page='dashboard'))
         
-        flash('Either the username or password is incorrect. Please try again.', 'danger')
+        flash('Either the username or password are incorrect. Please try again.', 'danger')
     return render_template('login.html', login_form=login_form)
 
 
@@ -60,7 +60,7 @@ def register():
         }
         status = registerUser(data)
 
-        if status == 'success':
+        if status['message'] == 'success':
             flash('Registration Successful! You may now log in.', 'success')
             return redirect(url_for('auth.login'))
     return render_template('register.html', register_form=form)

@@ -1,0 +1,110 @@
+.container{
+    top: 0;
+}
+.main-content-wrapper {
+    height: calc(100vh - 64px);
+}
+.card-header {
+    position: relative;
+}
+.card-title {
+    text-align: center;
+}
+#createAccount {
+    left: 0;
+    margin-left: 1em;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.table {
+    text-align: center;
+}
+
+.table thead {
+    font-weight: bold;
+    font-size: large;
+}
+.table thead .user-id,
+.table thead .employee-id,
+.table thead .admin{
+    width: 10%;
+}
+.table thead .first-name,
+.table thead .last-name {
+    width: 15%;
+}
+.table thead .actions {
+    width: 15%;
+}
+
+.table tbody .fas.fa-square-check {
+    color: green;
+}
+.table tbody .fas.fa-square-xmark {
+    color: red;
+}
+.table tbody .actions i:hover {
+    color: orange;
+    cursor: pointer;
+}
+
+.bs.form-control {
+    text-align: center;
+}
+.form-check {
+    display: flex;
+    justify-content: center;   
+}
+input[type=checkbox]{
+    /* Double-sized Checkboxes */
+    -ms-transform: scale(1); /* IE */
+    -moz-transform: scale(1); /* FF */
+    -webkit-transform: scale(1); /* Safari and Chrome */
+    -o-transform: scale(1); /* Opera */
+    transform: scale(1);
+    padding: 10px;
+}
+
+.hidden-input {
+    display: none;
+}
+
+.fa-triangle-exclamation {
+    color: orange;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.fa-key.forgot-pass {
+    animation: forgot-pass 1s infinite;
+}
+.fa-key.forgot-pass:hover {
+    color: orange !important;
+}
+@keyframes forgot-pass {
+    0% {
+        color: inherit;
+    }
+    50% {
+        color: orange;
+    }
+    100% {
+        color: inherit;
+    }
+}
+
+#confirmDelete,
+#confirmPromote,
+#confirmDemote,
+#confirmUsernameChange{
+    font-weight: bold;
+    font-size: large;
+}
+#confirmDelete span,
+#confirmPromote span,
+#confirmDemote span,
+#confirmUsernameChange span{
+    padding-left: 1em;
+    font-weight: normal;
+}

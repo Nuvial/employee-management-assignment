@@ -8,12 +8,11 @@ from db import get_db
 
 # Create a user object for flask-login library
 class User(UserMixin):
-    def __init__(self, id, employee_id, username, password, forgot_password, admin):
+    def __init__(self, id, employee_id, username, password, admin):
         self.id = id
         self.employee_id = employee_id
         self.username = username
         self.password = password
-        self.forgot_password = forgot_password
         self.admin = admin
 
     @staticmethod
@@ -26,7 +25,6 @@ class User(UserMixin):
                 user_data['fk_employee_id'],
                 user_data['username'],
                 user_data['password'],
-                user_data['forgot_password'],
                 user_data['admin']
             )
         return None
@@ -89,7 +87,7 @@ def usernameTaken(username):
     """
     values = (username,)
     user = db.execute(query, values).fetchone()
-    print(user)
+
     if user:
         return True
     return False
@@ -121,12 +119,12 @@ def registerUser(data):
         values = (employee_id, username, hashed_password)
 
         db = get_db()
-        db.execute(query, values)
+        cursor = db.execute(query, values)
         db.commit()
 
-        return 'success'
+        return {'message': 'success', 'pk_user_id': cursor.lastrowid}
     except Exception as e:
-        raise e
+        return {'message': 'error', 'error': e}
 
 def upgradeUser(id):
     """
@@ -138,6 +136,28 @@ def upgradeUser(id):
         query = """
             UPDATE Users
             SET admin = 1
+            WHERE pk_user_id = ?
+        """
+        values = (id,)
+
+        db = get_db()
+        db.execute(query, values)
+        db.commit()
+
+        return 'success'
+    except Exception as e:
+        raise e
+
+def demoteUser(id):
+    """
+    Demotes a user ID to a user account. The route should be protected by an admin-only login.
+    Args:
+        id (int): The User ID to downgrade
+    """
+    try:
+        query = """
+            UPDATE Users
+            SET admin = 0
             WHERE pk_user_id = ?
         """
         values = (id,)
