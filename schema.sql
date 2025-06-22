@@ -75,7 +75,8 @@ VALUES
 (7, 98.25, 42.5, 8.9),
 (8, 90.5, 55.0, 5.7),
 (9, 90.5, 84.25, 9.1),
-(10, 99.0, 71.0, 8.7);
+(10, 99.0, 71.0, 8.7),
+(11, 87.6, 75.4, 6.7);
 
 -- EmployeeLeave Table (only for those with leave requests)
 INSERT INTO EmployeeLeave (fk_employee_id, leave_type, start_date, end_date, status)
