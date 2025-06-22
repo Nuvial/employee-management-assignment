@@ -70,6 +70,8 @@ def ensure_db_exists():
     else:
         print("[INFO] Existing database found. Skipping init.")
 
+#  Ensure this is called when app is imported
+ensure_db_exists()
+
 if __name__ == '__main__':
-    ensure_db_exists()
     app.run(debug=True)
