@@ -63,7 +63,6 @@ def init_db():
         upgradeUser(1)
         print("[INIT] Database initialised and admin user created.")
 
-@app.before_first_request
 def ensure_db_exists():
     if not os.path.exists('database.db'):
         print("[INIT] No database found. Creating new database...")
@@ -72,4 +71,5 @@ def ensure_db_exists():
         print("[INFO] Existing database found. Skipping init.")
 
 if __name__ == '__main__':
+    ensure_db_exists()
     app.run(debug=True)
