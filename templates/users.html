@@ -8,7 +8,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-3 mx-auto">Enter a temporary password</h1>
+                <h1 class="modal-title fs-3 mx-auto">Enter a password</h1>
                 <button type="button" class="btn-close" style="margin-left: 0px;" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -151,7 +151,9 @@
     <div style="height: 1.5rem"></div> <!-- For some reason this fixes the overflow issue? -->
     <div class="card">
         <div class="card-header">
-            <button type="button" class="btn btn-primary btn-sm position-absolute" id="createAccount">Create Account <i class="fas fa-plus"></i></button>
+            {% if current_user.admin %}
+                <button type="button" class="btn btn-primary btn-sm position-absolute" id="createAccount">Create Account <i class="fas fa-plus"></i></button>
+            {% endif %}
             <h5 class="card-title mb-0">Login Accounts</h5>
         </div>
         <div class="card-body">

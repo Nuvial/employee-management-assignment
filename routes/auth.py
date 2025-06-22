@@ -1,6 +1,8 @@
-from flask import Blueprint, request, redirect, url_for, flash, render_template
-from flask_login import login_user, logout_user, login_required
+from flask import Blueprint, request, redirect, url_for, flash, render_template, abort
+from flask_login import login_user, logout_user, login_required, current_user
 from flask_bcrypt import Bcrypt
+
+from functools import wraps
 
 from .models.auth import LoginForm, RegisterForm, User
 from .models.auth import usernameTaken, isEmployeeIdRegistered, registerUser, forgotPassword, getUserData
@@ -10,7 +12,15 @@ from .models.employees import get_employees
 auth = Blueprint('auth', __name__)
 bcrypt = Bcrypt()
 
-
+# Custom decorator function to enforce admin permission on admin routes.
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.admin:
+            flash('You need to be an admin to access this page.', 'danger')
+            return redirect(url_for('auth.dashboard'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():

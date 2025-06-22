@@ -29,7 +29,7 @@ CREATE TABLE EmployeeLeave (
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
     date_requested TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status TEXT NOT NULL, /* Draft, Pending, Approved, etc.
+    status TEXT NOT NULL, /* Pending, Approved, etc.
     Would ideally be stored in a lookup table, but assignment limits to 4 tables maximum. */
     comment_employee TEXT, /* Any comments added by employee upon requesting */
     comment_admin TEXT, /* Any comments added by admin/manager upon status decision */
@@ -84,5 +84,4 @@ VALUES
 (6, 'Annual Leave', '2025-05-01', '2025-05-10', 'Rejected'),
 (6, 'Annual Leave', '2025-05-01', '2025-05-10', 'Pending'),
 (6, 'Annual Leave', '2025-05-15', '2025-05-22', 'Approved'),
-(8, 'Annual Leave', '2025-05-01', '2025-05-10', 'Draft'),
 (10, 'Annual Leave', '2025-05-01', '2025-05-10', 'Pending');

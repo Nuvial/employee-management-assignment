@@ -2,10 +2,13 @@ from flask import request, jsonify, Blueprint, render_template
 from flask_login import login_required
 
 from .models.stats import getStats, updateStats, addStats, Averages
+from .auth import admin_required
 
 stats = Blueprint('stats', __name__)
 
 @stats.route('/create/<int:employee_id>', methods=['POST'])
+@login_required
+@admin_required
 def createStatsRoute(employee_id):
     """
     Route to add a new employee.
@@ -37,6 +40,7 @@ def createStatsRoute(employee_id):
 
 @stats.route('/get_stats', methods=['GET'])
 @stats.route('/get_stats/<int:employee_id>', methods=['GET'])
+@login_required
 def getStatsRoute(employee_id=None):
     """
     Route to get all or specific employee/s statistics.
@@ -51,6 +55,8 @@ def getStatsRoute(employee_id=None):
             return jsonify({"error": "No stats found"}), 404
 
 @stats.route('/update/<int:employee_id>', methods=['PUT'])
+@login_required
+@admin_required
 def updateStatsRoute(employee_id):
     """
     Route to update an existing employee's stats.
@@ -73,6 +79,8 @@ def updateStatsRoute(employee_id):
 # --------------- Averages Routes ----------------
 
 @stats.route('/attendance/top5', methods=['GET'])
+@login_required
+@admin_required
 def getAttendanceTop5():
     """
     Route to get top 5 attendance employee id's
@@ -88,6 +96,8 @@ def getAttendanceTop5():
             return jsonify({"error": "No stats found"}), 404
 
 @stats.route('/attendance/bottom5', methods=['GET'])
+@login_required
+@admin_required
 def getAttendanceBottom5():
     """
     Route to get bottom 5 attendance employee id's
@@ -103,6 +113,8 @@ def getAttendanceBottom5():
             return jsonify({"error": "No stats found"}), 404
 
 @stats.route('/attendance/mean', methods=['GET'])
+@login_required
+@admin_required
 def getAttendanceMean():
     """
     Route to get mean attendance employee id's
@@ -118,6 +130,8 @@ def getAttendanceMean():
             return jsonify({"error": "No stats found"}), 404
 
 @stats.route('/attendance/median', methods=['GET'])
+@login_required
+@admin_required
 def getAttendanceMedian():
     """
     Route to get median attendance employee id's
@@ -133,6 +147,8 @@ def getAttendanceMedian():
             return jsonify({"error": "No stats found"}), 404
 
 @stats.route('/attendance/range', methods=['GET'])
+@login_required
+@admin_required
 def getAttendanceRange():
     """
     Route to get range attendance employee id's
@@ -148,6 +164,8 @@ def getAttendanceRange():
             return jsonify({"error": "No stats found"}), 404
 
 @stats.route('/attendance/modal', methods=['GET'])
+@login_required
+@admin_required
 def getAttendanceModal():
     """
     Route to get modal attendance employee id's
@@ -163,6 +181,8 @@ def getAttendanceModal():
             return jsonify({"error": "No stats found"}), 404
 
 @stats.route('/performance/top5', methods=['GET'])
+@login_required
+@admin_required
 def getPerformanceTop5():
     """
     Route to get top 5 performance employee id's
@@ -178,6 +198,8 @@ def getPerformanceTop5():
             return jsonify({"error": "No stats found"}), 404
 
 @stats.route('/performance/bottom5', methods=['GET'])
+@login_required
+@admin_required
 def getPerformanceBottom5():
     """
     Route to get bottom 5 performance employee id's
@@ -193,6 +215,8 @@ def getPerformanceBottom5():
             return jsonify({"error": "No stats found"}), 404
 
 @stats.route('/performance/mean', methods=['GET'])
+@login_required
+@admin_required
 def getPerformanceMean():
     """
     Route to get mean performance employee id's
@@ -208,6 +232,8 @@ def getPerformanceMean():
             return jsonify({"error": "No stats found"}), 404
 
 @stats.route('/performance/median', methods=['GET'])
+@login_required
+@admin_required
 def getPerformanceMedian():
     """
     Route to get median performance employee id's
@@ -223,6 +249,8 @@ def getPerformanceMedian():
             return jsonify({"error": "No stats found"}), 404
 
 @stats.route('/performance/range', methods=['GET'])
+@login_required
+@admin_required
 def getPerformanceRange():
     """
     Route to get range performance employee id's
@@ -238,6 +266,8 @@ def getPerformanceRange():
             return jsonify({"error": "No stats found"}), 404
 
 @stats.route('/performance/modal', methods=['GET'])
+@login_required
+@admin_required
 def getPerformanceModal():
     """
     Route to get modal performance employee id's

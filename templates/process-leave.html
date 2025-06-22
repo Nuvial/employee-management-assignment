@@ -9,6 +9,25 @@
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js'></script>
 <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/bootstrap5@6.1.17/index.global.min.js"></script>
 
+<div class="modal fade" id="selectLeaveTypeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-3 mx-auto">Please select the leave type:</h1>
+                <button type="button" class="btn-close" style="margin-left: 0px;" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex w-100 gap-2">
+                    <button type="button" class="btn btn-secondary btn-lg w-100" id="annualLeaveType" data-bs-dismiss="modal">Annual Leave</button>
+                    <button type="button" class="btn btn-secondary btn-lg w-100" id="sickLeaveType" data-bs-dismiss="modal">Sick Leave</button>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between" style="border-top: 0px;">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="approveModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -101,16 +120,28 @@
                     </div>
                     <div class="col-6">
                         <label for="employeeComments" class="form-label">Employee Comments</label>
-                        <textarea class="form-control" id="employeeComments" rows="3" disabled readonly></textarea>
+                        <textarea class="form-control" placeholder="Enter any comments here..." id="employeeComments" rows="3" disabled></textarea>
                     </div>
                 </div>
             </div>
             <div class="modal-footer d-flex justify-content-between">
                 <button type="button" class="btn btn-outline-secondary close-modal">Close</button>
-                <div style="gap: 1em;">
+                <div class="status-text"></div>
+                {% if current_user.admin %}
+                <div class="action-bar" style="gap: 1em;">
                     <button type="button" class="btn btn-danger mx-1" id="denyLeaveRequest" data-bs-toggle="modal" data-bs-target="#denyModal">Deny Leave Request</button>
                     <button type="button" class="btn btn-success" id="approveLeaveRequest" data-bs-toggle="modal" data-bs-target="#approveModal">Approve Leave Request</button>
                 </div>
+                <div class="action-bar-request" style="gap: 1em; display: none;">
+                    <button type="button" class="btn btn-secondary mx-1" id="modifyLeaveRequest">Modify Request</button>
+                    <button type="button" class="btn btn-success" id="confirmLeaveRequest">Confirm Request</button>
+                </div>
+                {% else %}
+                <div class="action-bar" style="gap: 1em;">
+                    <button type="button" class="btn btn-secondary mx-1" id="modifyLeaveRequest">Modify Request</button>
+                    <button type="button" class="btn btn-success" id="confirmLeaveRequest">Confirm Request</button>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -133,8 +164,16 @@
         </div>
     </div>
 
-    <div class="card calendar mb-3">
+    <div class="card calendar mb-3 {% if not current_user.admin %}mt-3{% endif %}">
         <div class="card-header d-flex justify-content-between">
+            <div class="top-left-options position-absolute d-flex">
+                <button type="button" class="btn btn-primary btn-sm disabled" id="addRequestBtn">Request <i class="fas fa-plus"></i></button>
+                <button type="button" class="btn btn-danger btn-sm" style="display: none;" id="cancelAddRequestBtn">Cancel <i class="fas fa-xmark"></i></button>
+                <div class="selected-leave-available px-4">
+                    <span id="selectedLeave"></span>
+                    <span id="selectedLeaveAvailable"></span>
+                </div>
+            </div>
             <h5 class="card-title m-0 mx-auto">Calendar</h5>
             <div class="form-check form-switch position-absolute end-0 mx-3">
                 <input class="form-check-input" type="checkbox" role="switch" id="toggleTableView">
@@ -148,10 +187,34 @@
     </div>
 </div>
 
-
+<script>
+    const active_page = "{{ active_page }}";
+</script>
 <script src="{{ url_for('static', filename='js/helpers.js') }}"></script>
 <script src="{{ url_for('static', filename='js/employees/employees.js') }}"></script>
 <script src="{{ url_for('static', filename='js/leave/leave.js') }}"></script>
+
+<script>
+    $(document).ready(function(){
+        $('#toggleTableView')[0].checked = false;
+        $('#adminComments').val('');
+
+        // Begin loading employees data
+        getRequestedLeave();
+
+        // Initialise elements
+        calendar = initCalendar('#calendar', 'auto', true);
+        initSearch(
+            '#employee-search', 
+            '#employee-records-body tr', 
+            [
+                {selector: '.employee-name'},
+                {selector: '.employee-id'}
+            ]
+        );
+        initTableToggle();
+    });
+</script>
 
 
 {% endblock %}

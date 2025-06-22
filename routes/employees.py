@@ -2,6 +2,7 @@ from flask import request, jsonify, Blueprint, render_template, flash, redirect,
 from flask_login import login_required, current_user
 
 from .models.employees import add_employee, get_employees, update_employee, delete_employee
+from .auth import admin_required
 
 employees = Blueprint('employees', __name__)
 
@@ -12,22 +13,26 @@ def index():
 
 @employees.route('/modify')
 @login_required
+@admin_required
 def modify_index():
-    if not current_user.admin:
-        flash('You need to be an admin to access this page.', 'danger')
-        return redirect(url_for('employees.index', active_page='view_records'))
     return render_template('employees-modify.html', active_page='modify_records')
 
 @employees.route('/get_employees', methods=['GET'])
 @employees.route('/get_employees/<int:employee_id>', methods=['GET'])
+@login_required
 def get_employees_route(employee_id=None):
     """
-    Route to get all or specific employee/s.
+    Route to get all or specific employee/s. <br>
+    If route is requested by a non-admin account, only the requesting users details are ever returned.
     Args:
         employee_id (int, optional): Employee ID to get. If not provided, gets all employees.
     """
     if request.method == 'GET':
-        employees_data = get_employees(employee_id)
+        if current_user.admin:
+            employees_data = get_employees(employee_id)
+        else:
+            employees_data = get_employees(current_user.employee_id)
+        
         if employees_data:
             return jsonify(employees_data), 200
         else:
@@ -35,6 +40,8 @@ def get_employees_route(employee_id=None):
 
 
 @employees.route('/add_employee', methods=['POST'])
+@login_required
+@admin_required
 def add_employee_route():
     """
     Route to add a new employee.
@@ -68,6 +75,8 @@ def add_employee_route():
             return jsonify({"error": str(e)}), 500
 
 @employees.route('/update_employee/<int:employee_id>', methods=['PUT'])
+@login_required
+@admin_required
 def update_employee_route(employee_id):
     """
     Route to update an existing employee.
@@ -86,6 +95,8 @@ def update_employee_route(employee_id):
             return jsonify({"error": str(e)}), 500
 
 @employees.route('/delete_employee/<int:employee_id>', methods=['DELETE'])
+@login_required
+@admin_required
 def delete_employee_route(employee_id):
     """
     Route to delete an employee.

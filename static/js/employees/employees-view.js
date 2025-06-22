@@ -7,7 +7,7 @@ $(document).ready(function(){
     loadEmployees();
 
     // Initialise elements
-    calendar = initCalendar('#calendar');
+    calendar = initCalendar('#calendar', '100%', true);
     initSearch(
         '#employee-search', 
         '#employee-records-body tr', 
