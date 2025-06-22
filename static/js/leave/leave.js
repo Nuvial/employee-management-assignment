@@ -127,6 +127,22 @@ const new_leave = {
                 console.log(`Error requesting leave.`);
             }
         });
+    },
+    deleteRequest: function(id){
+        $.ajax({
+            url: `/leave/update_leave/delete/${id}`,
+            type: 'DELETE',
+            success: function(resp){
+                if (resp.data){
+                    $('.modal.show').modal('hide');
+                    $('#cancelAddRequestBtn').click();
+                    flashMessage('Leave request has been successfully deleted.', 'success');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log(`Error requesting leave.`);
+            }
+        });
     }
 }
 
@@ -338,6 +354,7 @@ function handleEditClick(data, page){
     employee_comments.val(leave_data.comment_employee);
     admin_comments.val(leave_data.comment_admin);
 
+    $('#deleteRequest').hide();
     if (status == 'Approved' || status == 'Rejected' || page == 'view_records'){
         employee_comments.attr('disabled', '');
         admin_comments.attr('disabled', '');
@@ -347,7 +364,7 @@ function handleEditClick(data, page){
         $('.action-bar').show();
         $('.status-text').text('');
 
-        if (current_user.admin == 1 && !(current_user.id == selected_employee_id)){
+        if (current_user.admin == 1 && !(current_user.employee_id == selected_employee_id)){
             employee_comments.attr('disabled', '');
             admin_comments.removeAttr('disabled');
         } else {
@@ -355,6 +372,7 @@ function handleEditClick(data, page){
             admin_comments.attr('disabled', '');
             $('.action-bar').hide();
             $('.status-text').text(status);
+            $('#deleteRequest').show();
         }
     }
 
@@ -394,6 +412,7 @@ function closeModal(e){
 }
 $('#viewRequest .btn-close').on('click', closeModal);
 $('#viewRequest .close-modal').on('click', closeModal);
+$('#deleteRequestModal .close-modal').on('click', closeModal);
 
 //Event handler for approving leave request
 $('#approveRequestConfirm').on('click', function(){
@@ -452,3 +471,6 @@ $('#modifyLeaveRequest').on('click', function(){
     $('#selectLeaveTypeModal').modal('show');
 });
 $('#confirmLeaveRequest').on('click', function(){new_leave.confirmRequest()});
+$('#deleteRequestConfirm').on('click', function(){
+    new_leave.deleteRequest(selected_leave_id);
+});

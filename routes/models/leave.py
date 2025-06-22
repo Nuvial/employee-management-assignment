@@ -178,7 +178,28 @@ def requestLeave(fk_employee_id, leave_type, start_date, end_date, comment_emplo
             )
         """
         values = (fk_employee_id, leave_type, start_date, end_date, comment_employee)
-        print(values)
+
+        # Execute the query
+        db = get_db()
+        db.execute(query, values)
+        db.commit()
+
+        return 'success'
+    
+    except Exception as e:
+        raise Exception(f"An error occurred: {e}")
+
+def deleteRequest(leave_id, employee_id):
+    try:
+        # Create base query
+        query = """
+            DELETE FROM EmployeeLeave
+            WHERE 
+                pk_leave_id = ? AND
+                fk_employee_id = ? AND
+                status = 'Pending'
+        """
+        values = (leave_id, employee_id)
         # Execute the query
         db = get_db()
         db.execute(query, values)

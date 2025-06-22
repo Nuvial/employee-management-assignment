@@ -1,7 +1,7 @@
 from flask import request, jsonify, Blueprint, render_template
 from flask_login import login_required, current_user
 
-from .models.leave import getLeave, getRemainingLeave, getRequestedLeave, approveLeave, denyLeave, requestLeave
+from .models.leave import getLeave, getRemainingLeave, getRequestedLeave, approveLeave, denyLeave, requestLeave, deleteRequest
 from .auth import admin_required
 
 leave = Blueprint('leave', __name__)
@@ -104,6 +104,21 @@ def denyLeaveRoute(leave_id):
             return {'data': 'success'}
         else:
             return jsonify({"error": "Could not deny leave." })
+
+@leave.route('/update_leave/delete/<int:leave_id>', methods=['DELETE'])
+@login_required
+def deleteLeaveRoute(leave_id):
+    """
+    Deletes a specific leave id. Note: The leave HAS to be pending, otherwise it cannot be deleted once it has been approved.
+    Args:
+        leave_id (int): Specific ID of the leave to delete.
+    """
+    if request.method == 'DELETE':
+        delete = deleteRequest(leave_id, current_user.employee_id)
+        if delete == 'success':
+            return {'data': 'success'}
+        else:
+            return jsonify({"error": "Could not delete leave." })
 
 @leave.route('/request_leave/', methods=['POST'])
 @login_required

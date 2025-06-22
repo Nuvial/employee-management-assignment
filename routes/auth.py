@@ -5,7 +5,7 @@ from flask_bcrypt import Bcrypt
 from functools import wraps
 
 from .models.auth import LoginForm, RegisterForm, User
-from .models.auth import usernameTaken, isEmployeeIdRegistered, registerUser, forgotPassword, getUserData
+from .models.auth import usernameTaken, isEmployeeIdRegistered, registerUser, forgotPassword, getUserData, unForgotPassword
 from .models.employees import get_employees
 
 # Initialise blueprint and bcrypt
@@ -28,6 +28,7 @@ def login():
     if request.method == 'POST' and login_form.validate_on_submit():
         user = User.get(login_form.username.data)
         if user and bcrypt.check_password_hash(user.password, login_form.password.data):
+            unForgotPassword(user.id)
             login_user(user)
             return redirect(url_for('auth.dashboard', active_page='dashboard'))
         

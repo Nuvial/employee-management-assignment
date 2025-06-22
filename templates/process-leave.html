@@ -56,6 +56,20 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="deleteRequestModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-3 mx-auto">Delete Request?</h1>
+                <button type="button" class="btn-close close-modal" style="margin-left: 0px;" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-footer d-flex justify-content-between" style="border-top: 0px;">
+                <button type="button" class="btn btn-outline-secondary close-modal" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="deleteRequestConfirm">Confirm Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="viewRequest" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
@@ -127,6 +141,7 @@
             <div class="modal-footer d-flex justify-content-between">
                 <button type="button" class="btn btn-outline-secondary close-modal">Close</button>
                 <div class="status-text"></div>
+                <button type="button" class="btn btn-danger" id="deleteRequest" style="display: none;" data-bs-target="#deleteRequestModal" data-bs-toggle="modal">Delete Request</button>
                 {% if current_user.admin %}
                 <div class="action-bar" style="gap: 1em;">
                     <button type="button" class="btn btn-danger mx-1" id="denyLeaveRequest" data-bs-toggle="modal" data-bs-target="#denyModal">Deny Leave Request</button>
@@ -137,7 +152,7 @@
                     <button type="button" class="btn btn-success" id="confirmLeaveRequest">Confirm Request</button>
                 </div>
                 {% else %}
-                <div class="action-bar" style="gap: 1em;">
+                <div class="action-bar-request" style="gap: 1em;">
                     <button type="button" class="btn btn-secondary mx-1" id="modifyLeaveRequest">Modify Request</button>
                     <button type="button" class="btn btn-success" id="confirmLeaveRequest">Confirm Request</button>
                 </div>
