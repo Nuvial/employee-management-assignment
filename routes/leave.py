@@ -128,7 +128,7 @@ def requestLeaveRoute():
     """
     if request.method == 'POST':
         data = request.get_json()
-        fk_employee_id = current_user.id
+        fk_employee_id = current_user.employee_id
         leave_type = data['leave_type']
         start_date = data['start_date']
         end_date = data['end_date']
