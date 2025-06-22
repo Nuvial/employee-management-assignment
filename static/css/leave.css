@@ -38,15 +38,6 @@ div.leave-request .employee-records{
     padding: 0em 5em 0em 5em;
 }
 
-.calendar-event.Draft,
-#tableView table .Draft {
-    background-color: #ffd580;
-    border-color: #ffd580;
-    font-weight: bold;
-    color: black;
-    opacity: 0.25;
-    cursor: not-allowed;
-}
 .calendar-event.Pending,
 #tableView table .Pending {
     background: repeating-linear-gradient(
@@ -59,12 +50,6 @@ div.leave-request .employee-records{
     border-color: orange;
     font-weight: bold;
     color: black;
-    cursor: pointer;
-}
-.calendar-event.Pending:hover,
-#tableView table .Pending:hover {
-    outline: 3px solid black;
-    border-radius: 3px;
 }
 .calendar-event.Approved,
 #tableView table .Approved {
@@ -73,7 +58,6 @@ div.leave-request .employee-records{
     font-weight: bold;
     color: black;
     opacity: 0.25;
-    cursor: not-allowed;
 }
 .calendar-event.Rejected,
 #tableView table .Rejected{
@@ -82,7 +66,14 @@ div.leave-request .employee-records{
     font-weight: bold;
     color: black;
     opacity: 0.25;
-    cursor: not-allowed;
+}
+.calendar-event:hover,
+#tableView table td.Pending:hover,
+#tableView table td.Rejected:hover,
+#tableView table td.Approved:hover {
+    outline: 3px solid black;
+    border-radius: 3px;
+    cursor: pointer;
 }
 
 
@@ -122,4 +113,46 @@ div.leave-request .employee-records{
 .refresh-disabled:hover {
     cursor: progress !important;
     color: white !important;
+}
+
+.top-left-options{
+    left: 0;
+    top: 0.5em;
+    margin-left: 1em;
+}
+.top-left-options .selected-leave-available{
+    font-size: smaller;
+    text-align: center;
+}
+.top-left-options button {
+    padding: 2px 4px 2px 4px;
+    font-size: small;
+}
+.top-left-options i {
+    font-size: 10px;
+    text-align: center;
+}
+.top-left-options #selectedLeaveAvailable {
+    font-size: medium;
+    font-weight: bold;
+}
+
+.calendar-container.requesting-leave #calendar .selected-date{
+    background-color: orange !important;
+    opacity: 1 !important;
+    color: black;
+}
+
+.calendar-container.requesting-leave #calendar .fc-day:hover{
+    background-color: rgb(177, 115, 0);
+    cursor: pointer;
+    color: black;
+}
+.status-text {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: xx-large;
+    font-weight: bold;
+    color: orange;
 }

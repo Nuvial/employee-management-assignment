@@ -258,67 +258,144 @@ async function isUsernameUnique(username){
         return false;
     }
 }
-function populateUserTable(users){
+// function populateUserTable(users){
+//     const tbody = $('#userTableBody');
+
+//     html = '';
+//     users.forEach(user => {
+//         const admin = user.admin === 1;
+//         let admin_mark = '<i class="fas fa-square-check fa-xl"></i>';
+//         let forgot_password = user.forgot_password === 1 ? '<i class="fas fa-triangle-exclamation fa-lg"></i>' : '';
+//         let forgot_password_class = forgot_password !== '' ? 'forgot-pass' : '';
+
+//         //Normal actions bar shows everything - except crown as demote
+//         let actions = `
+//             <i class="fas fa-square-pen fa-xl"></i>
+//             <i class="fas fa-key fa-xl ${forgot_password_class}"></i>
+//             <i class="fas fa-trash fa-xl"></i>
+//             <i class="fas fa-arrow-trend-down fa-xl"></i>
+//         `;
+
+//         //Action bar shows everything if the user is not admin
+//         if (!admin){
+//             admin_mark = '<i class="fas fa-square-xmark fa-xl"></i>';
+//             actions = `
+//                 <i class="fas fa-square-pen fa-xl"></i>
+//                 <i class="fas fa-key fa-xl ${forgot_password_class}"></i>
+//                 <i class="fas fa-trash fa-xl"></i>
+//                 <i class="fas fa-crown fa-xl"></i>
+//             `;
+//         }
+
+//         //Action bar shows limited option if user is user
+//         if (Number(user.pk_user_id) == Number(current_user.id)){
+//             actions = `
+//                 <i class="fas fa-square-pen fa-xl"></i>
+//                 <i class="fas fa-key fa-xl ${forgot_password_class}"></i>
+//                 <i class="fas fa-trash fa-xl" style="visibility: hidden;"></i>
+//                 <i class="fas fa-crown fa-xl" style="visibility: hidden;"></i>
+//             `
+//         }
+
+//         html += `
+//             <tr data-user-id="${user.pk_user_id}">
+//                 <td class="user-id">
+//                     <div class="position-relative">
+//                         ${forgot_password}
+//                         ${user.pk_user_id}
+//                     </div>
+//                 </td>
+//                 <td class="employee-id"><div class="employee-id-div editable">${user.fk_employee_id}</div></td>
+//                 <td class="first-name">${user.first_name}</td>
+//                 <td class="last-name">${user.last_name}</td>
+//                 <td class="username"><div class="username-div editable">${user.username}</div></td>
+//                 <td class="admin">${admin_mark}</td>
+//                 <td class="actions align-middle">
+//                     <div class="d-flex justify-content-around align-items-center">
+//                         ${actions}
+//                     </div>
+//                 </td>
+//             </tr>
+//         `
+//     });
+//     $(tbody).html(html);
+// }
+function populateUserTable(users) {
     const tbody = $('#userTableBody');
+    let html = '';
 
-    html = '';
     users.forEach(user => {
-        const admin = user.admin === 1;
-        let admin_mark = '<i class="fas fa-square-check fa-xl"></i>';
-        let forgot_password = user.forgot_password === 1 ? '<i class="fas fa-triangle-exclamation fa-lg"></i>' : '';
-        let forgot_password_class = forgot_password !== '' ? 'forgot-pass' : '';
+        const isAdmin = user.admin === 1;
+        const isCurrentUser = Number(user.pk_user_id) === Number(current_user.id);
+        const hasForgotPassword = user.forgot_password === 1;
 
-        //Normal actions bar shows everything - except crown as demote
-        let actions = `
-            <i class="fas fa-square-pen fa-xl"></i>
-            <i class="fas fa-key fa-xl ${forgot_password_class}"></i>
-            <i class="fas fa-trash fa-xl"></i>
-            <i class="fas fa-arrow-trend-down fa-xl"></i>
-        `;
+        const adminMark = isAdmin 
+            ? '<i class="fas fa-square-check fa-xl"></i>' 
+            : '<i class="fas fa-square-xmark fa-xl"></i>';
 
-        //Action bar shows everything if the user is not admin
-        if (!admin){
-            admin_mark = '<i class="fas fa-square-xmark fa-xl"></i>';
-            actions = `
-                <i class="fas fa-square-pen fa-xl"></i>
-                <i class="fas fa-key fa-xl ${forgot_password_class}"></i>
-                <i class="fas fa-trash fa-xl"></i>
-                <i class="fas fa-crown fa-xl"></i>
-            `;
-        }
+        const forgotPasswordIcon = hasForgotPassword 
+            ? '<i class="fas fa-triangle-exclamation fa-lg" title="User has requested a password reset."></i>' 
+            : '';
 
-        //Action bar shows limited option if user is user
-        if (Number(user.pk_user_id) == Number(current_user.id)){
-            actions = `
-                <i class="fas fa-square-pen fa-xl"></i>
-                <i class="fas fa-key fa-xl ${forgot_password_class}"></i>
-                <i class="fas fa-trash fa-xl" style="visibility: hidden;"></i>
-                <i class="fas fa-crown fa-xl" style="visibility: hidden;"></i>
-            `
-        }
+        const forgotPasswordClass = hasForgotPassword ? 'forgot-pass' : '';
+
+        const actionIcons = getActionIcons(isAdmin, isCurrentUser, forgotPasswordClass);
 
         html += `
             <tr data-user-id="${user.pk_user_id}">
                 <td class="user-id">
                     <div class="position-relative">
-                        ${forgot_password}
+                        ${forgotPasswordIcon}
                         ${user.pk_user_id}
                     </div>
                 </td>
-                <td class="employee-id"><div class="employee-id-div editable">${user.fk_employee_id}</div></td>
+                <td class="employee-id">
+                    <div class="employee-id-div editable">${user.fk_employee_id}</div>
+                </td>
                 <td class="first-name">${user.first_name}</td>
                 <td class="last-name">${user.last_name}</td>
-                <td class="username"><div class="username-div editable">${user.username}</div></td>
-                <td class="admin">${admin_mark}</td>
+                <td class="username">
+                    <div class="username-div editable">${user.username}</div>
+                </td>
+                <td class="admin">${adminMark}</td>
                 <td class="actions align-middle">
-                    <div class="d-flex justify-content-around align-items-center">
-                        ${actions}
+                    <div class="d-flex justify-content-around align-items-center ${forgotPasswordClass}">
+                        ${actionIcons}
                     </div>
                 </td>
             </tr>
-        `
+        `;
     });
-    $(tbody).html(html);
+
+    tbody.html(html);
+}
+
+function getActionIcons(isAdmin, isCurrentUser, forgotPasswordClass) {
+    if (isCurrentUser) {
+        return `
+            <i class="fas fa-square-pen fa-xl" title="Change username."></i>
+            <i class="fas fa-key fa-xl ${forgotPasswordClass}" title="Change password."></i>
+            <i class="fas fa-trash fa-xl" style="visibility: hidden;" title="Delete account."></i>
+            <i class="fas fa-crown fa-xl" style="visibility: hidden;" title="Promote account."></i>
+        `;
+    }
+
+    if (isAdmin) {
+        return `
+            <i class="fas fa-square-pen fa-xl" title="Change username."></i>
+            <i class="fas fa-key fa-xl ${forgotPasswordClass}" title="Change password."></i>
+            <i class="fas fa-trash fa-xl" title="Delete account."></i>
+            <i class="fas fa-arrow-trend-down fa-xl" title="Demote account."></i>
+        `;
+    }
+
+    // Default actions for non-admin users
+    return `
+        <i class="fas fa-square-pen fa-xl" title="Change username."></i>
+        <i class="fas fa-key fa-xl ${forgotPasswordClass}" title="Change password."></i>
+        <i class="fas fa-trash fa-xl" title="Delete account."></i>
+        <i class="fas fa-crown fa-xl" title="Promote account."></i>
+    `;
 }
 
 previous_actions_html = '';

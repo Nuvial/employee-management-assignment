@@ -1,9 +1,10 @@
 from flask import request, jsonify, Blueprint, render_template
-from flask_login import login_required
+from flask_login import login_required, current_user
 from flask_bcrypt import Bcrypt
 
 from .models.users import getUsers, deleteUser, changePassword, changeUsername
 from .models.auth import isEmployeeIdRegistered, usernameTaken, registerUser, upgradeUser, demoteUser
+from .auth import admin_required
 
 users = Blueprint('users', __name__)
 bcrypt = Bcrypt()
@@ -15,6 +16,7 @@ def index():
 
 @users.route('/get_users', methods=['GET'])
 @users.route('/get_users/<int:user_id>', methods=['GET'])
+@login_required
 def getEmployeesRoute(user_id=None):
     """
     Route to get all or specific user/s.
@@ -22,7 +24,11 @@ def getEmployeesRoute(user_id=None):
         user_id (int, optional): User ID to get. If not provided, gets all users.
     """
     if request.method == 'GET':
-        users = getUsers(user_id)
+        if current_user.admin:
+            users = getUsers(user_id)
+        else:
+            users = getUsers(current_user.id)
+        
         if users:
             return jsonify(users), 200
         else:
@@ -53,6 +59,7 @@ def getUsernameTakenRoute():
     
 @users.route('/add_user', methods=['POST'])
 @login_required
+@admin_required
 def addUser():
     """
     Route to add a user from the modify login page
@@ -80,6 +87,7 @@ def addUser():
 
 @users.route('/promote_user/<int:user_id>', methods=['PUT'])
 @login_required
+@admin_required
 def promoteUserRoute(user_id):
     """
     Route to promote a user from the modify login page
@@ -93,6 +101,7 @@ def promoteUserRoute(user_id):
         
 @users.route('/demote_user/<int:user_id>', methods=['PUT'])
 @login_required
+@admin_required
 def demoteUserRoute(user_id):
     """
     Route to demote a user from the modify login page
@@ -106,6 +115,7 @@ def demoteUserRoute(user_id):
 
 @users.route('/delete_user/<int:user_id>', methods=['DELETE'])
 @login_required
+@admin_required
 def deleteUserRoute(user_id):
     """
     Route to delete a user from the modify login page

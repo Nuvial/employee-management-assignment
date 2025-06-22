@@ -191,3 +191,25 @@ def forgotPassword(id):
         return 'success'
     except Exception as e:
         raise e
+
+def unForgotPassword(id):
+    """
+    Sets the forgot_password attribute for the specified account to 0 (false). Automatically called if the user requests a password reset - but manages to log in anyway.
+    Args:
+        id (int): The User ID (not to be confused with employee ID)
+    """
+    try:
+        query = """
+            UPDATE Users 
+            SET forgot_password = 0
+            WHERE pk_user_id = ?
+        """
+        values = (id,)
+
+        db = get_db()
+        db.execute(query, values)
+        db.commit()
+
+        return 'success'
+    except Exception as e:
+        raise e

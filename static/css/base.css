@@ -89,13 +89,6 @@
     color: white !important;
     font-weight: 500;
 }
-.calendar-event.Draft,
-#tableView table .Draft {
-    background-color: #ffd580;
-    border-color: #ffd580;
-    font-weight: bold;
-    color: black;
-}
 .calendar-event.Pending,
 #tableView table .Pending {
     background: repeating-linear-gradient(

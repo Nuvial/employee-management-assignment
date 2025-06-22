@@ -17,7 +17,14 @@ async function loadEmployees(specific=null, stats=true, leave=true) {
         if (resp.length > 0){
             populateEmployeesRecords(resp, specific);
             if (stats) loadEmployeeStats();
-            if (leave) loadEmployeeLeave();
+            if (leave) {
+                loadEmployeeLeave();
+                let formatted = specific
+                if (!specific){
+                    formatted = [...new Set(resp.map(record => record.pk_employee_id))];
+                }
+                cachePendingDetails(formatted);
+            };
         }
     } catch (error){
         console.error("Error loading employees: " + error);

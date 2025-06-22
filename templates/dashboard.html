@@ -5,20 +5,35 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
 
 <div class="row mt-3">
+    {% if current_user.admin %}
     <div class="col-6">
+    {% else %}
+    <div class="col-12">
+    {% endif %}
         <div class="card" href="{{ url_for('employees.index') }}">
             <div class="card-body">
                 <i class="fas fa-clipboard fa-2xl position-absolute top-0 end-0 m-4 pt-2"></i>
                 <h5 class="card-title">View Records</h5>
+                {% if current_user.admin %}
                 <h6 class="card-subtitle mb-2">View all employee records.</h6>
+                {% else %}
+                <h6 class="card-subtitle mb-2">View your employee record.</h6>
+                {% endif %}
                 <hr>
+                {% if current_user.admin %}
                 <p class="card-text">
                     As an admin, you can view all employee records including personal details, performance statistics, leave balances, and more.<br>
                     Performance and attendance evaluations are also accessible, allowing you to monitor employee progress and contributions effectively.
                 </p>
+                {% else %}
+                <p class="card-text">
+                    View all your employee records including personal details, performance statistics, leave balances, and more.
+                </p>
+                {% endif %}
             </div>
         </div>
     </div>
+    {% if current_user.admin %}
     <div class="col-6">
         <div class="card" href="{{ url_for('employees.modify_index') }}">
             <div class="card-body">
@@ -33,19 +48,32 @@
             </div>
         </div>
     </div>
+    {% endif %}
 </div>
 <div class="row mt-3">
     <div class="col-6">
         <div class="card" href="{{ url_for('leave.index') }}">
             <div class="card-body">
                 <i class="fas fa-calendar-days fa-2xl position-absolute top-0 end-0 m-4 pt-2"></i>
+                {% if current_user.admin %}
                 <h5 class="card-title">Process Leave</h5>
                 <h6 class="card-subtitle mb-2">Process any active leave requests.</h6>
+                {% else %}
+                <h5 class="card-title">Manage Leave</h5>
+                <h6 class="card-subtitle mb-2">View or create new leave requests.</h6>
+                {% endif %}
                 <hr>
+                {% if current_user.admin %}
                 <p class="card-text">
                     As an admin you can process leave requests from employees, including approving or rejecting leave applications.<br>
                     You can also view the status of all leave requests, ensuring that employee leave is managed efficiently and transparently.
                 </p>
+                {% else %}
+                <p class="card-text">
+                    View your leave balance, submit new leave requests, and track the status of your applications.<br>
+                    Easily manage your time off and stay informed about your leave history.
+                </p>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -53,14 +81,25 @@
         <div class="card" href="{{ url_for('users.index') }}">
             <div class="card-body">
                 <i class="fas fa-users fa-2xl position-absolute top-0 end-0 m-4 pt-2"></i>
+                {% if current_user.admin %}
                 <h5 class="card-title">Modify Login Accounts</h5>
                 <h6 class="card-subtitle mb-2">Amend employee account login details.</h6>
+                {% else %}
+                <h5 class="card-title">Change Login Account Details</h5>
+                <h6 class="card-subtitle mb-2">Amend account login details.</h6>
+                {% endif %}
                 <hr>
+                {% if current_user.admin %}
                 <p class="card-text">
                     As an admin, you can modify employee login accounts, including resetting passwords and updating usernames.<br>
                     You can also create new accounts, reset forgotten passwords, and upgrade accounts to admin status if necessary.<br>
                     This feature ensures that employee access to the system is secure and up-to-date.
                 </p>
+                {% else %}
+                <p class="card-text">
+                    View and update your account details, such as your username and password. <br>Keep your login information secure and up to date.
+                </p>
+                {% endif %}
             </div>
         </div>
     </div>

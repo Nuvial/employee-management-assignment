@@ -77,7 +77,7 @@ def getRemainingLeave(employee_id=None):
     except Exception as e:
         raise Exception(f"An error occurred: {e}")
 
-def getRequestedLeave():
+def getRequestedLeave(employee_id=None):
     """
     Returns:
         employee_id (array): Employee ID's with requsted leave.
@@ -89,10 +89,16 @@ def getRequestedLeave():
             FROM EmployeeLeave
             WHERE status == 'Pending'
         """
+        values = ()
+
+        if employee_id:
+            # Add condition to base query if id is provided
+            query += " AND fk_employee_id = ?"
+            values = (employee_id,)
         
         # Execute the query
         db = get_db()
-        employees = db.execute(query).fetchall()
+        employees = db.execute(query, values).fetchall()
 
         # Convert result into a dictionary
         employees = [dict(row) for row in employees]
@@ -147,6 +153,53 @@ def denyLeave(id, comment=None):
         """
         values = (comment, id)
         
+        # Execute the query
+        db = get_db()
+        db.execute(query, values)
+        db.commit()
+
+        return 'success'
+    
+    except Exception as e:
+        raise Exception(f"An error occurred: {e}")
+
+def requestLeave(fk_employee_id, leave_type, start_date, end_date, comment_employee):
+    try:
+        # Create base query
+        query = """
+            INSERT INTO EmployeeLeave(fk_employee_id, leave_type, start_date, end_date, status, comment_employee)
+            VALUES (
+                ?,
+                ?,
+                ?,
+                ?,
+                'Pending',
+                ?
+            )
+        """
+        values = (fk_employee_id, leave_type, start_date, end_date, comment_employee)
+
+        # Execute the query
+        db = get_db()
+        db.execute(query, values)
+        db.commit()
+
+        return 'success'
+    
+    except Exception as e:
+        raise Exception(f"An error occurred: {e}")
+
+def deleteRequest(leave_id, employee_id):
+    try:
+        # Create base query
+        query = """
+            DELETE FROM EmployeeLeave
+            WHERE 
+                pk_leave_id = ? AND
+                fk_employee_id = ? AND
+                status = 'Pending'
+        """
+        values = (leave_id, employee_id)
         # Execute the query
         db = get_db()
         db.execute(query, values)

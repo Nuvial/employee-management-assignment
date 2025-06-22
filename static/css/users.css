@@ -76,8 +76,13 @@ input[type=checkbox]{
     top: 50%;
     transform: translateY(-50%);
 }
-.fa-key.forgot-pass {
+td.actions div.forgot-pass .fa-key.forgot-pass {
     animation: forgot-pass 1s infinite;
+}
+td.actions div.forgot-pass i:not(.forgot-pass) {
+    opacity: 0.25;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 .fa-key.forgot-pass:hover {
     color: orange !important;

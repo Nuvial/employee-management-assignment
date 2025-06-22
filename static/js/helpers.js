@@ -25,11 +25,18 @@ function flashMessage(message, type='success', timeout=3000) {
         </div>
     `);
     $('#flash-container').append(alert);
-    setTimeout(() => {
-        alert.alert('close');
-    }, timeout);
+
+    if (timeout !== 0){
+        setTimeout(() => {
+            alert.alert('close');
+        }, timeout);
+    }
 }
 
+
+let first_date = '';
+let second_date = '';
+let selecting_date = false;
 /**
  * Initialises a FullCalendar instance. Events have to be dynamically added (Not accepted in the function). 
  * 
@@ -62,9 +69,39 @@ function initCalendar(id, height='100%', edit=false) {
             }
         },
         eventClick: function(info){
-            if (edit && info.el.classList.contains('Pending')) {
-                handleEditClick(info.event);
+            if (edit) {
+                handleEditClick(info.event, active_page);
             }
+        },
+        dateClick: function(info){
+            if (selecting_date){
+                if (!first_date) {
+                    first_date = String(info.date.toDateString());
+                    $(info.dayEl).addClass('selected-date');
+                    $('.alert').alert('close');
+                    flashMessage('Please select the leave request end date', 'info', 0);
+                    second_date = null;
+                } else {
+                    second_date = String(info.date.toDateString());
+                    $(info.dayEl).addClass('selected-date');
+                    $('.alert').alert('close');
+                    new_leave.handleDateClick();
+                }
+            }
+        },
+        datesSet: function(){
+            $('.calendar-day').each(function() {
+                const cell = this;
+                const cellDate = cell.getAttribute('data-date');
+                if (!cellDate) return;
+                $(cell).removeClass('selected-date');
+                if (first_date && (new Date(cellDate).toDateString() == first_date)) {
+                    $(cell).addClass('selected-date');
+                }
+                if (second_date && (new Date(cellDate).toDateString() == second_date)) {
+                    $(cell).addClass('selected-date');
+                }
+            });
         }
     });
     calendar.render();
