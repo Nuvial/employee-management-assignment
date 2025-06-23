@@ -81,8 +81,13 @@ VALUES
 -- EmployeeLeave Table (only for those with leave requests)
 INSERT INTO EmployeeLeave (fk_employee_id, leave_type, start_date, end_date, status)
 VALUES
-(2, 'Annual Leave', '2025-05-01', '2025-05-10', 'Approved'),
-(6, 'Annual Leave', '2025-05-01', '2025-05-10', 'Rejected'),
-(6, 'Annual Leave', '2025-05-01', '2025-05-10', 'Pending'),
-(6, 'Annual Leave', '2025-05-15', '2025-05-22', 'Approved'),
-(10, 'Annual Leave', '2025-05-01', '2025-05-10', 'Pending');
+(2, 'Annual Leave', '2025-06-01', '2025-06-05', 'Approved'),
+(6, 'Annual Leave', '2025-07-05', '2025-07-10', 'Rejected'),
+(6, 'Annual Leave', '2025-07-05', '2025-07-10', 'Pending'),
+(6, 'Annual Leave', '2025-08-01', '2025-08-08', 'Approved'),
+(10, 'Annual Leave', '2025-07-15', '2025-07-20', 'Pending'),
+(3, 'Sick Leave', '2025-06-10', '2025-06-12', 'Approved'),
+(4, 'Sick Leave', '2025-07-12', '2025-07-14', 'Pending'),
+(7, 'Sick Leave', '2025-08-10', '2025-08-12', 'Approved'),
+(8, 'Sick Leave', '2025-07-18', '2025-07-20', 'Rejected'),
+(9, 'Sick Leave', '2025-07-18', '2025-07-20', 'Pending');
