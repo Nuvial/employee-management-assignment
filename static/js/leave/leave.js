@@ -390,7 +390,7 @@ function handleEditClick(data, page){
 
     modal.modal('toggle');
 }
-$('.card-body #tableView').on('click', '.Pending', function(){
+$('.card-body #tableView').on('click', 'tr td:last-child()', function(){
     const leave_id = $(this).closest('tbody').data('leave-id');
     const event = calendar.getEvents().find(ev =>
         ev.extendedProps.pk_leave_id === leave_id
