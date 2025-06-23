@@ -23,6 +23,7 @@ $(document).ready(function(){
 
 function softRefresh(){
     $('.modal.show').modal('hide');
+    $('#createAccount').removeClass('disabled');
     loadUsers();
 }
 
@@ -412,8 +413,11 @@ async function validateFields() {
 
         if (name === 'employee-id-div') {
             promises.push((async () => {
-                if (!isNumeric(value)) {
+                if (!isNumeric(value) || !(Number.isInteger(Number(value)))) {
                     addFeedback(feedback_div, 'ID must be an integer.', input);
+                    return false;
+                } else if (Number(value) < 0) {
+                    addFeedback(feedback_div, 'ID Must be greater than 0.', input);
                     return false;
                 } else if (!(await isEmployeeIdUnique(value))) {
                     addFeedback(feedback_div, 'This ID is already registered.', input);

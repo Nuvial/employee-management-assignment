@@ -16,6 +16,7 @@ const new_leave = {
     stop: function(){
         $('.calendar-container').removeClass('active-calendar requesting-leave').addClass('idle-calendar hover-calendar');
         $('.selected-date').removeClass('selected-date');
+        $('#employee-records-body.disabled').removeClass('disabled');
         this.type = null;
         first_date = '';
         second_date = '';
@@ -72,6 +73,12 @@ const new_leave = {
     },
     populateRequestModal: function(start, end){
         const modal = $('#viewRequest');
+
+        //Hide these elements if they were shown from previous interaction
+        modal.find('#deleteRequest').hide();
+        modal.find('.status-text').hide();
+
+        //Populate standard
         modal.find('#requestTitleID').text('Confirm New Leave Request');
         modal.find('#requestTitleType').text('');
 
@@ -355,11 +362,16 @@ function handleEditClick(data, page){
     admin_comments.val(leave_data.comment_admin);
 
     $('#deleteRequest').hide();
-    if (status == 'Approved' || status == 'Rejected' || page == 'view_records'){
+    if (status == 'Approved' || status == 'Rejected' || page == 'view_records' || page == 'modify_records'){
         employee_comments.attr('disabled', '');
         admin_comments.attr('disabled', '');
         $('.action-bar').hide();
         $('.status-text').text(status);
+        if (date_from > new Date() && current_user.employee_id == selected_employee_id && status == 'Approved'){
+            if (!(page == 'view_records') && !(page == 'modify_records')){
+                $('#deleteRequest').show();
+            }
+        }
     } else {
         $('.action-bar').show();
         $('.status-text').text('');
@@ -392,6 +404,8 @@ $('.card-body #tableView').on('click', '.Pending', function(){
 
 
 function enableLeaveRequest(){
+    $('#employee-records-body').addClass('disabled');
+
     $('#selectedLeave').text(`${new_leave.type} Available:`);
     if (new_leave.type === 'Annual Leave'){
         $('#selectedLeaveAvailable').text(`${new_leave.leave_available} Days`);
@@ -427,6 +441,14 @@ $('#denyRequestConfirm').on('click', function(){
 
 //Requesting new leave
 $(document).on('click', '#employee-records-body tr', function(){
+    if (!employee_leave[selected_employee_id]){
+        if ($('.calendar-container').hasClass('idle-calendar') && selected_employee_id){
+            $('.idle-calendar').removeClass('idle-calendar').addClass('active-calendar');
+        } else {
+            $('.active-calendar').removeClass('active-calendar').addClass('idle-calendar');
+        }
+    }
+
     if (selected_employee_id == current_user.employee_id){
         $('#addRequestBtn').removeClass('disabled');
     } else {
@@ -459,7 +481,8 @@ $('#cancelAddRequestBtn').on('click', function(){
     $('#toggleTableView').removeAttr('disabled');
     $('#selectedLeave').text('');
     $('#selectedLeaveAvailable').text('');
-    $('#addRequestBtn').show();
+    $('#addRequestBtn').show().addClass('disabled');
+    $('.alert').alert('close');
     new_leave.stop();
 });
 $('#modifyLeaveRequest').on('click', function(){

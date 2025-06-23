@@ -197,7 +197,7 @@ def deleteRequest(leave_id, employee_id):
             WHERE 
                 pk_leave_id = ? AND
                 fk_employee_id = ? AND
-                status = 'Pending'
+                (status = 'Pending' OR (status = 'Approved' AND date(start_date) > date('now')))
         """
         values = (leave_id, employee_id)
         # Execute the query

@@ -156,3 +156,8 @@ div.leave-request .employee-records{
     font-weight: bold;
     color: orange;
 }
+
+tbody#employee-records-body.disabled{
+    opacity: 0.25;
+    pointer-events: none;
+}

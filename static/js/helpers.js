@@ -175,16 +175,23 @@ function deepEqual(obj1, obj2) {
 function createInputFields(selector, size='sm', copy_classes=false, required=false){
     const fields = $(selector).find('.editable');
     fields.each(function(index, field){
-        const classes = copy_classes ? $(field).attr('class'): '';
         const first_class = $(field).attr('class').split(' ')[0];
-        const [value, unit] = $(field).text().split(' ');
-        const isRequired = required === true ? 'required': '';
+
+        const classes = copy_classes 
+                        ? $(field).attr('class')
+                        : '';
+        const [value, unit] = !(classes.includes('name'))
+                        ? $(field).text().trim().split(' ')
+                        : [$(field).text().trim(), ''];
+        const isRequired = required === true 
+                        ? 'required'
+                        : '';
 
         let input = `
             <div class="input-group input-group-${size} mb-1 has-validation">
                 <input name="${first_class}" class="bs form-control ${classes}" value="${value}" ${isRequired}>
         `
-        if (unit && isAlphaNumeric(unit)){
+        if (unit && isAlphaNumeric(unit) && !(classes.includes('name'))){
             input += `<span class="bs input-group-text">${unit}</span>`
         }
         input += `
