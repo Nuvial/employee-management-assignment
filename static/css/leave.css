@@ -120,6 +120,14 @@ div.leave-request .employee-records{
     top: 0.5em;
     margin-left: 1em;
 }
+.top-left-options #addRequestBtn,
+.top-left-options #cancelAddRequestBtn {
+    padding-left: 1em;
+    padding-right: 1em;
+}
+.top-left-options #addRequestBtn.disabled {
+    opacity: 0.1;
+}
 .top-left-options .selected-leave-available{
     font-size: smaller;
     text-align: center;
