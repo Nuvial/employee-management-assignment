@@ -166,7 +166,7 @@
     <div class="card my-3 leave-request">
         <div class="card-header">
             <h5 class="card-title mb-0">Leave Requests</h5>
-            <i class="fas fa-rotate fa-lg refresh"></i>
+            <i class="fas fa-rotate fa-lg refresh" title="Refresh..."></i>
         </div>
         <div class="card-body employee-records p-0">
             <input class="form-control" id="employee-search" placeholder="ID/Name...">
@@ -182,7 +182,7 @@
     <div class="card calendar mb-3 {% if not current_user.admin %}mt-3{% endif %}">
         <div class="card-header d-flex justify-content-between">
             <div class="top-left-options position-absolute d-flex">
-                <button type="button" class="btn btn-primary btn-sm disabled" id="addRequestBtn">Request <i class="fas fa-plus"></i></button>
+                <button type="button" class="btn btn-primary btn-sm disabled" id="addRequestBtn" title="Create a new leave request.">Request <i class="fas fa-plus"></i></button>
                 <button type="button" class="btn btn-danger btn-sm" style="display: none;" id="cancelAddRequestBtn">Cancel <i class="fas fa-xmark"></i></button>
                 <div class="selected-leave-available px-4">
                     <span id="selectedLeave"></span>
@@ -228,6 +228,7 @@
             ]
         );
         initTableToggle();
+
     });
 </script>
 
