@@ -60,8 +60,13 @@ def init_db():
             'username': 'admin',
             'hashed_password': bcrypt.generate_password_hash('admin').decode('utf-8')
         })
+        registerUser({
+            'employee_id': 2,
+            'username': 'user',
+            'hashed_password': bcrypt.generate_password_hash('user').decode('utf-8')
+        })
         upgradeUser(1)
-        print("[INIT] Database initialised and admin user created.")
+        print("[INIT] Database initialised. Admin & User account created.")
 
 def ensure_db_exists():
     if not os.path.exists('database.db'):
